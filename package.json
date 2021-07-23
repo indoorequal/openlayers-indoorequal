@@ -6,7 +6,21 @@
   "author": "François de Metz",
   "license": "BSD",
   "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(ol)/)"
+    ]
+  },
   "dependencies": {
     "ol": "^6.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel-jest": "^27.0.6",
+    "jest": "^27.0.6"
   }
 }
