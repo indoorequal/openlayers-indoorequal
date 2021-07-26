@@ -56,7 +56,6 @@ describe('IndoorEqual', () => {
               new Feature({ layer: 'area', level: 0 }),
               new Feature({ layer: 'area', level: 1 }),
               new Feature({ layer: 'area', level: -2 }),
-              new Feature({ layer: 'poi',  level: 3 }),
             ];
           }
         };

@@ -41,10 +41,7 @@ export default class IndoorEqual extends BaseObject {
       source.on('tileloadend', () => {
         const extent = this.map.getView().calculateExtent(this.map.getSize());
         const features = source.getFeaturesInExtent(extent);
-        const areaFeatures = features.filter((feature) => {
-          return feature.getProperties().layer === 'area';
-        });
-        this.set('levels', findAllLevels(areaFeatures));
+        this.set('levels', findAllLevels(features));
       });
     });
   }
