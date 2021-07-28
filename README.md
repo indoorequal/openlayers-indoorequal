@@ -11,7 +11,7 @@ Get your free key at [indoorequal.com](https://indoorequal.com).
 ```javascript
 import { getLayer } from 'openlayers-indoorequal';
 
-cosnt key = '<you-indoorequal-api-key>';
+const key = '<you-indoorequal-api-key>';
 const indoorEqualLayer = getLayer('https://tiles.indoorequal.org/?key=' + key);
 
 const map = new Map({
