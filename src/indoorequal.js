@@ -17,7 +17,7 @@ export default class IndoorEqual extends BaseObject {
     if (opts.url === defaultOpts.url && !opts.apiKey) {
       throw 'You must register your apiKey at https://indoorequal.com before and set it as apiKey param.';
     }
-    super({ levels: [] });
+    super({ levels: [], level: '0' });
 
     this.map = map;
     this.url = opts.url;

@@ -62,12 +62,22 @@ describe('IndoorEqual', () => {
       }
     };
     getLayer.mockReturnValueOnce(getLayerReturn);
-    const indoorequal = new IndoorEqual(map, { apiKey: 'test' });
-    expect(indoorequal.get('levels')).toEqual([]);
-    indoorequal.on('change:levels', (levels) => {
-      expect(indoorequal.get('levels')).toEqual([1, 0, -2]);
+    const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
+    expect(indoorEqual.get('levels')).toEqual([]);
+    indoorEqual.on('change:levels', (levels) => {
+      expect(indoorEqual.get('levels')).toEqual([1, 0, -2]);
       done();
     });
     tileLoadEndCallback();
+  });
+
+  it('allows to set the current level', () => {
+    const map = { addLayer: jest.fn() };
+    const getLayerReturn = { on: jest.fn() };
+    getLayer.mockReturnValueOnce(getLayerReturn);
+    const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
+    expect(indoorEqual.get('level')).toEqual('0');
+    indoorEqual.set('level', '1');
+    expect(indoorEqual.get('level')).toEqual('1');
   });
 });
