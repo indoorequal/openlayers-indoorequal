@@ -73,11 +73,12 @@ describe('IndoorEqual', () => {
 
   it('allows to set the current level', () => {
     const map = { addLayer: jest.fn() };
-    const getLayerReturn = { on: jest.fn() };
+    const getLayerReturn = { on: jest.fn(), changed: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
     const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
     expect(indoorEqual.get('level')).toEqual('0');
     indoorEqual.set('level', '1');
     expect(indoorEqual.get('level')).toEqual('1');
+    expect(getLayerReturn.changed.mock.calls.length).toEqual(1);
   });
 });

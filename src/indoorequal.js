@@ -24,6 +24,7 @@ export default class IndoorEqual extends BaseObject {
     this.apiKey = opts.apiKey;
 
     this._addLayer();
+    this._changeLayerOnLevelChange();
   }
 
   _addLayer() {
@@ -43,6 +44,12 @@ export default class IndoorEqual extends BaseObject {
         const features = source.getFeaturesInExtent(extent);
         this.set('levels', findAllLevels(features));
       });
+    });
+  }
+
+  _changeLayerOnLevelChange() {
+    this.on('change:level', () => {
+      this.layer.changed();
     });
   }
 }
