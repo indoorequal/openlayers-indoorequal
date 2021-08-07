@@ -4,6 +4,12 @@ openlayers-indoorequal is an [OpenLayers][ol] library to display indoor data fro
 
 The work is currently in progress.
 
+## Install
+
+**With NPM**
+
+    npm install --save openlayers-indoorequal
+
 ## Example
 
 Get your free key at [indoorequal.com](https://indoorequal.com).
