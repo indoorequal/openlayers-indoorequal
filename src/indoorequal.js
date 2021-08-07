@@ -22,9 +22,15 @@ export default class IndoorEqual extends BaseObject {
     this.map = map;
     this.url = opts.url;
     this.apiKey = opts.apiKey;
+    this.styleFunction = null;
 
     this._addLayer();
     this._changeLayerOnLevelChange();
+    this._setLayerStyle();
+  }
+
+  setStyle(styleFunction) {
+    this.styleFunction = styleFunction;
   }
 
   _addLayer() {
@@ -50,6 +56,14 @@ export default class IndoorEqual extends BaseObject {
   _changeLayerOnLevelChange() {
     this.on('change:level', () => {
       this.layer.changed();
+    });
+  }
+
+  _setLayerStyle() {
+    this.layer.setStyle((feature, resolution) => {
+      if (feature.getProperties().level === this.get('level')) {
+        return this.styleFunction && this.styleFunction(feature, resolution);
+      }
     });
   }
 }
