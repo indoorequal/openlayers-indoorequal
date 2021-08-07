@@ -1,5 +1,12 @@
 import { Control } from 'ol/control';
 
+/**
+ * A control to display the available levels
+ * @param {IndoorEqual} indoorEqual the IndoorEqual instance
+ * @param {object} options
+ * @param {url} [options.target] Specify a target if you want the control to be rendered outside of the map's viewport.
+ * @return {LevelControl} `this`
+ */
 export default class LevelControl extends Control {
   constructor(indoorEqual, options = {}) {
     const element = document.createElement('div');
