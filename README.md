@@ -15,13 +15,15 @@ The work is currently in progress.
 Get your free key at [indoorequal.com](https://indoorequal.com).
 
 ```javascript
-import { getLayer } from 'openlayers-indoorequal';
 import Map from 'ol/Map';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import Style from 'ol/style/Style';
+import Fill from 'ol/style/Fill.js';
+import IndoorEqual, { LevelControl } from 'openlayers-indoorequal';
+import 'openlayers-indoorequal/openlayers-indoorequal.css';
 
-const key = '<your-indoorequal-api-key>';
-const indoorEqualLayer = getLayer('https://tiles.indoorequal.org/?key=' + key);
+const apiKey = '<your-indoorequal-api-key>';
 
 const map = new Map({
   target: 'map',
@@ -29,9 +31,18 @@ const map = new Map({
     new TileLayer({
       source: new OSM(),
     }),
-    indoorEqualLayer,
   ],
 });
+
+const indoorEqual = new IndoorEqual(map, { apiKey });
+indoorEqual.setStyle((feature, resolution) => {
+  return new Style({
+    fill: new Fill({ color: 'white' })
+  });
+});
+
+const control = new LevelControl(indoorEqual);
+map.addControl(control);
 ```
 
 ## API
