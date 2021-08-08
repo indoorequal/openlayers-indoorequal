@@ -111,6 +111,20 @@ Emitted when the current level has been updated
 
 Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
 
+## Develop
+
+**Run tests**
+
+    yarn test [--watch]
+
+**Build a new version**
+
+    yarn build
+
+**Generate the documentation**
+
+    yarn doc
+
 ## License
 
 BSD
