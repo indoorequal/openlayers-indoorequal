@@ -5,8 +5,8 @@
   "repository": "https://github.com/indoorequal/openlayers-indoorequal",
   "author": "François de Metz",
   "license": "BSD",
-  "main": "dist/mapbox-gl-indoorequal.cjs.js",
-  "module": "dist/mapbox-gl-indoorequal.esm.js",
+  "main": "dist/openlayers-indoorequal.cjs.js",
+  "module": "dist/openlayers-indoorequal.esm.js",
   "scripts": {
     "build": "rollup --config",
     "doc": "documentation readme src/index.js --section=API",
