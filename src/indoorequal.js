@@ -1,6 +1,7 @@
 import BaseObject from 'ol/Object';
 import { getLayer } from './layer';
 import findAllLevels from './levels';
+import defaultStyle from './defaultstyle';
 
 /**
  * Load the indoor= source and layers in your map.
@@ -24,7 +25,7 @@ export default class IndoorEqual extends BaseObject {
     this.map = map;
     this.url = opts.url;
     this.apiKey = opts.apiKey;
-    this.styleFunction = null;
+    this.styleFunction = defaultStyle;
 
     this._addLayer();
     this._changeLayerOnLevelChange();
