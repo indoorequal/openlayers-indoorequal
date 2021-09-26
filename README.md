@@ -36,11 +36,6 @@ const map = new Map({
 });
 
 const indoorEqual = new IndoorEqual(map, { apiKey });
-indoorEqual.setStyle((feature, resolution) => {
-  return new Style({
-    fill: new Fill({ color: 'white' })
-  });
-});
 
 const control = new LevelControl(indoorEqual);
 map.addControl(control);
