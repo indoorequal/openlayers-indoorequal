@@ -9,6 +9,7 @@
   "module": "dist/openlayers-indoorequal.esm.js",
   "browser": "dist/openlayers-indoorequal.umd.min.js",
   "scripts": {
+    "dev": "rollup --config --watch",
     "build": "rollup --config",
     "doc": "documentation readme src/index.js --section=API",
     "test": "jest"

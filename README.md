@@ -5,6 +5,15 @@ openlayers-indoorequal is an [OpenLayers][ol] library to display indoor data fro
 
 The work is currently in progress.
 
+It provides:
+
+*   a default style of the indoor tiles
+*   a way to customize the style
+*   a level control to change the level displayed on the map
+*   a programatic API to list the levels available and set the level displayed
+
+[**See the demo**](https://indoorequal.github.io/openlayers-indoorequal).
+
 ## Install
 
 **With NPM**

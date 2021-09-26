@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Map with indoor=</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.8.1/build/ol.js"></script>
+    <script src="./dist/openlayers-indoorequal.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.8.1/css/ol.css" type="text/css">
+    <link href="./openlayers-indoorequal.css" rel="stylesheet" />
+    <style>
+      body { margin: 0; padding: 0; }
+      #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      const key = 'ovQPkGYxevfm0PFknWbLlp';
+
+      const map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM(),
+          }),
+        ],
+        view: new ol.View({
+          center: [258283.23, 6243707.82],
+          zoom: 18
+        })
+      });
+      const indoorEqual = new IndoorEqual.default(map, { apiKey: key });
+      const control = new IndoorEqual.LevelControl(indoorEqual);
+      map.addControl(control);
+    </script>
+  </body>
+</html>
