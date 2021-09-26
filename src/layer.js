@@ -2,8 +2,8 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import TileJSON from 'ol/source/TileJSON';
 import MVT from 'ol/format/MVT';
-import { fromLonLat } from 'ol/proj.js';
-import TileGrid from 'ol/tilegrid/TileGrid.js';
+import { fromLonLat } from 'ol/proj';
+import TileGrid from 'ol/tilegrid/TileGrid';
 
 function extentFromTileJSON(tileJSON) {
     var bounds = tileJSON.bounds;
