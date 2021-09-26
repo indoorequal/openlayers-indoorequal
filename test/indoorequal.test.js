@@ -102,6 +102,7 @@ describe('IndoorEqual', () => {
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
     const indoorEqual = new IndoorEqual(map, { url: 'http://localhost:8090/' });
+    indoorEqual.setStyle();
     expect(() => {
       getLayerReturn.setStyle.mock.calls[0][0](new Feature({ layer: 'area', level: '0' }));
     }).not.toThrow();
