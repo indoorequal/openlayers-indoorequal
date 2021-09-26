@@ -1,9 +1,6 @@
 # openlayers-indoorequal ![build](https://img.shields.io/github/workflow/status/indoorequal/openlayers-indoorequal/CI) [![npm](https://img.shields.io/npm/v/openlayers-indoorequal)](https://www.npmjs.com/package/openlayers-indoorequal)
 
-
 openlayers-indoorequal is an [OpenLayers][ol] library to display indoor data from [indoor=][].
-
-The work is currently in progress.
 
 It provides:
 
@@ -12,7 +9,7 @@ It provides:
 *   a level control to change the level displayed on the map
 *   a programatic API to list the levels available and set the level displayed
 
-[**See the demo**](https://indoorequal.github.io/openlayers-indoorequal).
+[**See the demo**](https://indoorequal.github.io/openlayers-indoorequal/).
 
 ## Install
 
