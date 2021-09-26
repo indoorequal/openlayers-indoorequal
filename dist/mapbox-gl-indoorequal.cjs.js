@@ -10,6 +10,10 @@ var proj_js = require('ol/proj.js');
 var TileGrid = require('ol/tilegrid/TileGrid.js');
 var control = require('ol/control');
 var BaseObject = require('ol/Object');
+var Style = require('ol/style/Style');
+var Fill = require('ol/style/Fill.js');
+var Stroke = require('ol/style/Stroke');
+var Text = require('ol/style/Text');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -19,6 +23,10 @@ var TileJSON__default = /*#__PURE__*/_interopDefaultLegacy(TileJSON);
 var MVT__default = /*#__PURE__*/_interopDefaultLegacy(MVT);
 var TileGrid__default = /*#__PURE__*/_interopDefaultLegacy(TileGrid);
 var BaseObject__default = /*#__PURE__*/_interopDefaultLegacy(BaseObject);
+var Style__default = /*#__PURE__*/_interopDefaultLegacy(Style);
+var Fill__default = /*#__PURE__*/_interopDefaultLegacy(Fill);
+var Stroke__default = /*#__PURE__*/_interopDefaultLegacy(Stroke);
+var Text__default = /*#__PURE__*/_interopDefaultLegacy(Text);
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -150,6 +158,8 @@ function _assertThisInitialized(self) {
 function _possibleConstructorReturn(self, call) {
   if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
+  } else if (call !== void 0) {
+    throw new TypeError("Derived constructors may only return object or undefined");
   }
 
   return _assertThisInitialized(self);
@@ -201,10 +211,10 @@ function onTileJSONLoaded(layer, tilejson) {
   var extent = extentFromTileJSON(tileJSONDoc);
   var minZoom = tileJSONDoc.minzoom;
   var maxZoom = tileJSONDoc.maxzoom;
-  var source = new VectorTileSource__default['default']({
+  var source = new VectorTileSource__default["default"]({
     attributions: tilejson.getAttributions(),
-    format: new MVT__default['default'](),
-    tileGrid: new TileGrid__default['default']({
+    format: new MVT__default["default"](),
+    tileGrid: new TileGrid__default["default"]({
       origin: tileGrid.getOrigin(0),
       extent: extent || tileGrid.getExtent(),
       minZoom: minZoom,
@@ -218,11 +228,11 @@ function onTileJSONLoaded(layer, tilejson) {
 }
 
 function getLayer(url, options) {
-  var layer = new VectorTileLayer__default['default'](_objectSpread2({
+  var layer = new VectorTileLayer__default["default"](_objectSpread2({
     declutter: true,
     visible: false
   }, options));
-  var tilejson = new TileJSON__default['default']({
+  var tilejson = new TileJSON__default["default"]({
     url: url
   });
   tilejson.on('change', function () {
@@ -327,6 +337,105 @@ function findAllLevels(features) {
   }).reverse();
 }
 
+function areaLayer(feature, resolution) {
+  var properties = feature.getProperties();
+
+  if (properties["class"] === 'level') {
+    return;
+  }
+
+  var color = '#fdfcfa';
+
+  if (properties.access && ['no', 'private'].includes(properties.access)) {
+    color = '#F2F1F0';
+  } else if (properties.is_poi && properties["class"] !== 'corridor') {
+    color = '#D4EDFF';
+  } else if (properties["class"] === 'room') {
+    color = '#fefee2';
+  }
+
+  var stroke;
+
+  if (properties.layer === 'area' && ['area', 'corridor', 'plaform'].includes(properties["class"])) {
+    stroke = new Stroke__default["default"]({
+      color: '#bfbfbf',
+      width: 1
+    });
+  }
+
+  if (properties.layer === 'area' && properties["class"] === 'column') {
+    stroke = new Fill__default["default"]({
+      color: '#bfbfbf'
+    });
+  }
+
+  if (properties.layer === 'area' && ['room', 'wall'].includes(properties["class"])) {
+    stroke = new Stroke__default["default"]({
+      color: 'gray',
+      width: 2
+    });
+  }
+
+  return new Style__default["default"]({
+    fill: new Fill__default["default"]({
+      color: color
+    }),
+    stroke: stroke
+  });
+}
+
+function transportationLayer(feature, resolution) {
+  return new Style__default["default"]({
+    stroke: new Stroke__default["default"]({
+      color: 'gray',
+      width: 2,
+      lineDash: [4, 7]
+    })
+  });
+}
+
+function areanameLayer(feature, resolution) {
+  return new Style__default["default"]({
+    text: new Text__default["default"]({
+      text: feature.getProperties().name,
+      fill: new Fill__default["default"]({
+        color: '#666'
+      })
+    })
+  });
+}
+
+function poiLayer(feature, resolution) {
+  return new Style__default["default"]({
+    text: new Text__default["default"]({
+      text: feature.getProperties().name,
+      fill: new Fill__default["default"]({
+        color: '#666'
+      })
+    })
+  });
+}
+
+function defaultStyle(feature, resolution) {
+  var properties = feature.getProperties();
+
+  if (properties.layer === 'area') {
+    return areaLayer(feature);
+  }
+
+  if (properties.layer === 'transportation') {
+    return transportationLayer();
+  }
+
+  if (properties.layer === 'area_name') {
+    return areanameLayer(feature);
+  }
+
+  if (properties.layer === 'poi' && feature.getType() === 'Point') {
+    return poiLayer(feature);
+  }
+}
+
 /**
  * Load the indoor= source and layers in your map.
  * @param {object} map the OpenLayers instance of the map
@@ -367,7 +476,7 @@ var IndoorEqual = /*#__PURE__*/function (_BaseObject) {
     _this.map = map;
     _this.url = opts.url;
     _this.apiKey = opts.apiKey;
-    _this.styleFunction = null;
+    _this.styleFunction = defaultStyle;
 
     _this._addLayer();
 
@@ -437,8 +546,8 @@ var IndoorEqual = /*#__PURE__*/function (_BaseObject) {
   }]);
 
   return IndoorEqual;
-}(BaseObject__default['default']);
+}(BaseObject__default["default"]);
 
 exports.LevelControl = LevelControl;
-exports['default'] = IndoorEqual;
+exports["default"] = IndoorEqual;
 exports.getLayer = getLayer;

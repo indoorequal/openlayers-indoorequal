@@ -6,6 +6,10 @@ import { fromLonLat } from 'ol/proj.js';
 import TileGrid from 'ol/tilegrid/TileGrid.js';
 import { Control } from 'ol/control';
 import BaseObject from 'ol/Object';
+import Style from 'ol/style/Style';
+import Fill from 'ol/style/Fill.js';
+import Stroke from 'ol/style/Stroke';
+import Text from 'ol/style/Text';
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -137,6 +141,8 @@ function _assertThisInitialized(self) {
 function _possibleConstructorReturn(self, call) {
   if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
+  } else if (call !== void 0) {
+    throw new TypeError("Derived constructors may only return object or undefined");
   }
 
   return _assertThisInitialized(self);
@@ -314,6 +320,105 @@ function findAllLevels(features) {
   }).reverse();
 }
 
+function areaLayer(feature, resolution) {
+  var properties = feature.getProperties();
+
+  if (properties["class"] === 'level') {
+    return;
+  }
+
+  var color = '#fdfcfa';
+
+  if (properties.access && ['no', 'private'].includes(properties.access)) {
+    color = '#F2F1F0';
+  } else if (properties.is_poi && properties["class"] !== 'corridor') {
+    color = '#D4EDFF';
+  } else if (properties["class"] === 'room') {
+    color = '#fefee2';
+  }
+
+  var stroke;
+
+  if (properties.layer === 'area' && ['area', 'corridor', 'plaform'].includes(properties["class"])) {
+    stroke = new Stroke({
+      color: '#bfbfbf',
+      width: 1
+    });
+  }
+
+  if (properties.layer === 'area' && properties["class"] === 'column') {
+    stroke = new Fill({
+      color: '#bfbfbf'
+    });
+  }
+
+  if (properties.layer === 'area' && ['room', 'wall'].includes(properties["class"])) {
+    stroke = new Stroke({
+      color: 'gray',
+      width: 2
+    });
+  }
+
+  return new Style({
+    fill: new Fill({
+      color: color
+    }),
+    stroke: stroke
+  });
+}
+
+function transportationLayer(feature, resolution) {
+  return new Style({
+    stroke: new Stroke({
+      color: 'gray',
+      width: 2,
+      lineDash: [4, 7]
+    })
+  });
+}
+
+function areanameLayer(feature, resolution) {
+  return new Style({
+    text: new Text({
+      text: feature.getProperties().name,
+      fill: new Fill({
+        color: '#666'
+      })
+    })
+  });
+}
+
+function poiLayer(feature, resolution) {
+  return new Style({
+    text: new Text({
+      text: feature.getProperties().name,
+      fill: new Fill({
+        color: '#666'
+      })
+    })
+  });
+}
+
+function defaultStyle(feature, resolution) {
+  var properties = feature.getProperties();
+
+  if (properties.layer === 'area') {
+    return areaLayer(feature);
+  }
+
+  if (properties.layer === 'transportation') {
+    return transportationLayer();
+  }
+
+  if (properties.layer === 'area_name') {
+    return areanameLayer(feature);
+  }
+
+  if (properties.layer === 'poi' && feature.getType() === 'Point') {
+    return poiLayer(feature);
+  }
+}
+
 /**
  * Load the indoor= source and layers in your map.
  * @param {object} map the OpenLayers instance of the map
@@ -354,7 +459,7 @@ var IndoorEqual = /*#__PURE__*/function (_BaseObject) {
     _this.map = map;
     _this.url = opts.url;
     _this.apiKey = opts.apiKey;
-    _this.styleFunction = null;
+    _this.styleFunction = defaultStyle;
 
     _this._addLayer();
 
