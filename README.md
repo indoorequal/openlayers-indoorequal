@@ -73,7 +73,7 @@ A control to display the available levels
 *   `indoorEqual` **[IndoorEqual](#indoorequal)** the IndoorEqual instance
 *   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
 
-    *   `options.target` **[url](https://developer.mozilla.org/docs/Web/API/URL/URL)?** Specify a target if you want the control to be rendered outside of the map's viewport.
+    *   `options.target` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Specify a target if you want the control to be rendered outside of the map's viewport.
 
 Returns **[LevelControl](#levelcontrol)** `this`
 
@@ -88,7 +88,7 @@ Load the indoor= source and layers in your map.
 *   `map` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** the OpenLayers instance of the map
 *   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
 
-    *   `options.url` **[url](https://developer.mozilla.org/docs/Web/API/URL/URL)?** Override the default tiles URL (<https://tiles.indoorequal.org/>).
+    *   `options.url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Override the default tiles URL (<https://tiles.indoorequal.org/>).
     *   `options.apiKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
 
 Returns **[IndoorEqual](#indoorequal)** `this`
