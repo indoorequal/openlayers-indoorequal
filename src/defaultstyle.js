@@ -26,7 +26,7 @@ function areaLayer(feature, resolution) {
     });
   }
   if (properties.layer === 'area' && properties.class === 'column') {
-    stroke = new Fill({ color: '#bfbfbf' });
+    color = '#bfbfbf';
   }
   if (properties.layer === 'area' && ['room', 'wall'].includes(properties.class)) {
     stroke = new Stroke({
