@@ -2,12 +2,12 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import TileJSON from 'ol/source/TileJSON';
 import MVT from 'ol/format/MVT';
-import { fromLonLat } from 'ol/proj.js';
-import TileGrid from 'ol/tilegrid/TileGrid.js';
+import { fromLonLat } from 'ol/proj';
+import TileGrid from 'ol/tilegrid/TileGrid';
 import { Control } from 'ol/control';
 import BaseObject from 'ol/Object';
 import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill.js';
+import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Text from 'ol/style/Text';
 
@@ -237,7 +237,7 @@ function getLayer(url, options) {
  * A control to display the available levels
  * @param {IndoorEqual} indoorEqual the IndoorEqual instance
  * @param {object} options
- * @param {url} [options.target] Specify a target if you want the control to be rendered outside of the map's viewport.
+ * @param {string} [options.target] Specify a target if you want the control to be rendered outside of the map's viewport.
  * @return {LevelControl} `this`
  */
 
@@ -347,9 +347,7 @@ function areaLayer(feature, resolution) {
   }
 
   if (properties.layer === 'area' && properties["class"] === 'column') {
-    stroke = new Fill({
-      color: '#bfbfbf'
-    });
+    color = '#bfbfbf';
   }
 
   if (properties.layer === 'area' && ['room', 'wall'].includes(properties["class"])) {
@@ -423,7 +421,7 @@ function defaultStyle(feature, resolution) {
  * Load the indoor= source and layers in your map.
  * @param {object} map the OpenLayers instance of the map
  * @param {object} options
- * @param {url} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
+ * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
  * @param {string} [options.apiKey] The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
  * @fires change:levels
  * @fires change:level

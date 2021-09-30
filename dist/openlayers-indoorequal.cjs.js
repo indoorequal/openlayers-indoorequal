@@ -6,12 +6,12 @@ var VectorTileLayer = require('ol/layer/VectorTile');
 var VectorTileSource = require('ol/source/VectorTile');
 var TileJSON = require('ol/source/TileJSON');
 var MVT = require('ol/format/MVT');
-var proj_js = require('ol/proj.js');
-var TileGrid = require('ol/tilegrid/TileGrid.js');
+var proj = require('ol/proj');
+var TileGrid = require('ol/tilegrid/TileGrid');
 var control = require('ol/control');
 var BaseObject = require('ol/Object');
 var Style = require('ol/style/Style');
-var Fill = require('ol/style/Fill.js');
+var Fill = require('ol/style/Fill');
 var Stroke = require('ol/style/Stroke');
 var Text = require('ol/style/Text');
 
@@ -188,8 +188,8 @@ function extentFromTileJSON(tileJSON) {
   var bounds = tileJSON.bounds;
 
   if (bounds) {
-    var ll = proj_js.fromLonLat([bounds[0], bounds[1]]);
-    var tr = proj_js.fromLonLat([bounds[2], bounds[3]]);
+    var ll = proj.fromLonLat([bounds[0], bounds[1]]);
+    var tr = proj.fromLonLat([bounds[2], bounds[3]]);
     return [ll[0], ll[1], tr[0], tr[1]];
   }
 }
@@ -254,7 +254,7 @@ function getLayer(url, options) {
  * A control to display the available levels
  * @param {IndoorEqual} indoorEqual the IndoorEqual instance
  * @param {object} options
- * @param {url} [options.target] Specify a target if you want the control to be rendered outside of the map's viewport.
+ * @param {string} [options.target] Specify a target if you want the control to be rendered outside of the map's viewport.
  * @return {LevelControl} `this`
  */
 
@@ -364,9 +364,7 @@ function areaLayer(feature, resolution) {
   }
 
   if (properties.layer === 'area' && properties["class"] === 'column') {
-    stroke = new Fill__default["default"]({
-      color: '#bfbfbf'
-    });
+    color = '#bfbfbf';
   }
 
   if (properties.layer === 'area' && ['room', 'wall'].includes(properties["class"])) {
@@ -440,7 +438,7 @@ function defaultStyle(feature, resolution) {
  * Load the indoor= source and layers in your map.
  * @param {object} map the OpenLayers instance of the map
  * @param {object} options
- * @param {url} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
+ * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
  * @param {string} [options.apiKey] The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
  * @fires change:levels
  * @fires change:level
