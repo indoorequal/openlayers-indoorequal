@@ -51,6 +51,7 @@ function transportationLayer(feature, resolution) {
 function areanameLayer(feature, resolution) {
   return new Style({
     text: new Text({
+      font: '13px Noto Sans Regular, sans-serif',
       text: feature.getProperties().name,
       fill: new Fill({ color: '#666' }),
     }),
@@ -80,6 +81,7 @@ function poiLayer(feature, resolution, map, sprite) {
 
   return new Style({
     text: new Text({
+      font: '11px Noto Sans Regular, sans-serif',
       text: properties.name,
       fill: new Fill({ color: '#666' }),
       offsetY: 18,
