@@ -22,6 +22,13 @@ Discover:
 
     npm install --save openlayers-indoorequal
 
+**In the browser**
+
+```html
+<script src="https://unpkg.com/openlayers-indoorequal@latest/dist/openlayers-indoorequal.umd.min.js"></script>
+<link href="https://unpkg.com/openlayers-indoorequal@latest/openlayers-indoorequal.css" rel="stylesheet" />
+```
+
 ## Example
 
 Get your free key at [indoorequal.com](https://indoorequal.com).
