@@ -1,3 +1,6 @@
+.level-control button {
+  width: 100%;
+}
 .level-control .level-control-active {
   background-color: rgba(0, 60, 136, 0.7);
 }
