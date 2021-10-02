@@ -54,6 +54,10 @@ function areanameLayer(feature, resolution) {
       font: '13px Noto Sans Regular, sans-serif',
       text: feature.getProperties().name,
       fill: new Fill({ color: '#666' }),
+      stroke: new Stroke({
+        color: 'white',
+        width: 1
+      })
     }),
   });
 }
@@ -85,6 +89,10 @@ function poiLayer(feature, resolution, map, sprite) {
       text: properties.name,
       fill: new Fill({ color: '#666' }),
       offsetY: 18,
+      stroke: new Stroke({
+        color: 'white',
+        width: 1
+      })
     }),
     image: icon,
   });
