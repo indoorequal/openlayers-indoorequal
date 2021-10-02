@@ -88,6 +88,8 @@ Load the indoor= source and layers in your map.
 *   `map` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** the OpenLayers instance of the map
 *   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
 
+    *   `options.defaultStyle` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** False to not set the default style. Default true.
+    *   `options.spriteBaseUrl` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
     *   `options.url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Override the default tiles URL (<https://tiles.indoorequal.org/>).
     *   `options.apiKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
 

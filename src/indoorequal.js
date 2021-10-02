@@ -7,6 +7,8 @@ import defaultStyle from './defaultstyle';
  * Load the indoor= source and layers in your map.
  * @param {object} map the OpenLayers instance of the map
  * @param {object} options
+ * @param {boolean} [options.defaultStyle] False to not set the default style. Default true.
+ * @param {string} [options.spriteBaseUrl] The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
  * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
  * @param {string} [options.apiKey] The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
  * @fires change:levels
@@ -15,7 +17,7 @@ import defaultStyle from './defaultstyle';
  */
 export default class IndoorEqual extends BaseObject {
   constructor(map, options = {}) {
-    const defaultOpts = { url: 'https://tiles.indoorequal.org/' };
+    const defaultOpts = { url: 'https://tiles.indoorequal.org/', defaultStyle: true, spriteBaseUrl: null };
     const opts = { ...defaultOpts, ...options };
     if (opts.url === defaultOpts.url && !opts.apiKey) {
       throw 'You must register your apiKey at https://indoorequal.com before and set it as apiKey param.';
@@ -25,9 +27,9 @@ export default class IndoorEqual extends BaseObject {
     this.map = map;
     this.url = opts.url;
     this.apiKey = opts.apiKey;
-    this.styleFunction = defaultStyle;
 
     this._addLayer();
+    this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.layer, opts.spriteBaseUrl) : null;
     this._changeLayerOnLevelChange();
     this._setLayerStyle();
   }

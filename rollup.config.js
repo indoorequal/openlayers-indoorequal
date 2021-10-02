@@ -35,10 +35,7 @@ export default [
       'ol/format/MVT',
       'ol/proj',
       'ol/tilegrid/TileGrid',
-      'ol/style/Style',
-      'ol/style/Fill',
-      'ol/style/Stroke',
-      'ol/style/Text',
+      'ol/style',
     ],
     output: [
       { file: pkg.main, format: 'cjs', exports: 'named' },
