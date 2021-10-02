@@ -5,167 +5,8 @@ import MVT from 'ol/format/MVT';
 import { fromLonLat } from 'ol/proj';
 import TileGrid from 'ol/tilegrid/TileGrid';
 import { Control } from 'ol/control';
+import { Style, Stroke, Text, Fill, Icon } from 'ol/style';
 import BaseObject from 'ol/Object';
-import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill';
-import Stroke from 'ol/style/Stroke';
-import Text from 'ol/style/Text';
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-
-    if (enumerableOnly) {
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    }
-
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
-}
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-function _isNativeReflectConstruct() {
-  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === "function") return true;
-
-  try {
-    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (typeof call === "object" || typeof call === "function")) {
-    return call;
-  } else if (call !== void 0) {
-    throw new TypeError("Derived constructors may only return object or undefined");
-  }
-
-  return _assertThisInitialized(self);
-}
-
-function _createSuper(Derived) {
-  var hasNativeReflectConstruct = _isNativeReflectConstruct();
-
-  return function _createSuperInternal() {
-    var Super = _getPrototypeOf(Derived),
-        result;
-
-    if (hasNativeReflectConstruct) {
-      var NewTarget = _getPrototypeOf(this).constructor;
-
-      result = Reflect.construct(Super, arguments, NewTarget);
-    } else {
-      result = Super.apply(this, arguments);
-    }
-
-    return _possibleConstructorReturn(this, result);
-  };
-}
 
 function extentFromTileJSON(tileJSON) {
   var bounds = tileJSON.bounds;
@@ -177,10 +18,10 @@ function extentFromTileJSON(tileJSON) {
   }
 }
 
-var defaultResolutions = function () {
-  var resolutions = [];
+const defaultResolutions = function () {
+  const resolutions = [];
 
-  for (var res = 78271.51696402048; resolutions.length <= 24; res /= 2) {
+  for (let res = 78271.51696402048; resolutions.length <= 24; res /= 2) {
     resolutions.push(res);
   }
 
@@ -188,13 +29,13 @@ var defaultResolutions = function () {
 }();
 
 function onTileJSONLoaded(layer, tilejson) {
-  var tileJSONDoc = tilejson.getTileJSON();
-  var tiles = Array.isArray(tileJSONDoc.tiles) ? tileJSONDoc.tiles : [tileJSONDoc.tiles];
-  var tileGrid = tilejson.getTileGrid();
-  var extent = extentFromTileJSON(tileJSONDoc);
-  var minZoom = tileJSONDoc.minzoom;
-  var maxZoom = tileJSONDoc.maxzoom;
-  var source = new VectorTileSource({
+  const tileJSONDoc = tilejson.getTileJSON();
+  const tiles = Array.isArray(tileJSONDoc.tiles) ? tileJSONDoc.tiles : [tileJSONDoc.tiles];
+  const tileGrid = tilejson.getTileGrid();
+  const extent = extentFromTileJSON(tileJSONDoc);
+  const minZoom = tileJSONDoc.minzoom;
+  const maxZoom = tileJSONDoc.maxzoom;
+  const source = new VectorTileSource({
     attributions: tilejson.getAttributions(),
     format: new MVT(),
     tileGrid: new TileGrid({
@@ -211,15 +52,16 @@ function onTileJSONLoaded(layer, tilejson) {
 }
 
 function getLayer(url, options) {
-  var layer = new VectorTileLayer(_objectSpread2({
+  const layer = new VectorTileLayer({
     declutter: true,
-    visible: false
-  }, options));
-  var tilejson = new TileJSON({
-    url: url
+    visible: false,
+    ...options
+  });
+  const tilejson = new TileJSON({
+    url
   });
   tilejson.on('change', function () {
-    var state = tilejson.getState();
+    const state = tilejson.getState();
 
     if (state === 'ready') {
       onTileJSONLoaded(layer, tilejson);
@@ -241,116 +83,73 @@ function getLayer(url, options) {
  * @return {LevelControl} `this`
  */
 
-var LevelControl = /*#__PURE__*/function (_Control) {
-  _inherits(LevelControl, _Control);
-
-  var _super = _createSuper(LevelControl);
-
-  function LevelControl(indoorEqual) {
-    var _this;
-
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    _classCallCheck(this, LevelControl);
-
-    var element = document.createElement('div');
+class LevelControl extends Control {
+  constructor(indoorEqual, options = {}) {
+    const element = document.createElement('div');
     element.className = 'level-control ol-unselectable ol-control';
-    _this = _super.call(this, {
-      element: element,
+    super({
+      element,
       target: options.target
     });
-    _this.indoorEqual = indoorEqual;
+    this.indoorEqual = indoorEqual;
 
-    _this._renderNewLevels();
+    this._renderNewLevels();
 
-    _this.indoorEqual.on('change:levels', _this._renderNewLevels.bind(_assertThisInitialized(_this)));
-
-    _this.indoorEqual.on('change:level', _this._renderNewLevels.bind(_assertThisInitialized(_this)));
-
-    return _this;
+    this.indoorEqual.on('change:levels', this._renderNewLevels.bind(this));
+    this.indoorEqual.on('change:level', this._renderNewLevels.bind(this));
   }
 
-  _createClass(LevelControl, [{
-    key: "_renderNewLevels",
-    value: function _renderNewLevels() {
-      var _this2 = this;
+  _renderNewLevels() {
+    this.element.innerHTML = '';
+    const currentLevel = this.indoorEqual.get('level');
+    this.indoorEqual.get('levels').forEach(level => {
+      const button = document.createElement('button');
 
-      this.element.innerHTML = '';
-      var currentLevel = this.indoorEqual.get('level');
-      this.indoorEqual.get('levels').forEach(function (level) {
-        var button = document.createElement('button');
+      if (currentLevel === level) {
+        button.classList.add('level-control-active');
+      }
 
-        if (currentLevel === level) {
-          button.classList.add('level-control-active');
-        }
-
-        button.textContent = level;
-        button.addEventListener('click', function () {
-          _this2.indoorEqual.set('level', level);
-        });
-
-        _this2.element.appendChild(button);
+      button.textContent = level;
+      button.addEventListener('click', () => {
+        this.indoorEqual.set('level', level);
       });
-    }
-  }]);
-
-  return LevelControl;
-}(Control);
-
-function findAllLevels(features) {
-  var levels = [];
-
-  for (var i = 0; i < features.length; i++) {
-    var feature = features[i];
-    var properties = feature.getProperties();
-
-    if (properties.layer !== 'area' || properties["class"] === 'level') {
-      continue;
-    }
-
-    var level = properties.level;
-
-    if (!levels.includes(level)) {
-      levels.push(level);
-    }
+      this.element.appendChild(button);
+    });
   }
 
-  return levels.sort(function (a, b) {
-    return a - b;
-  }).reverse();
 }
 
 function areaLayer(feature, resolution) {
-  var properties = feature.getProperties();
+  const properties = feature.getProperties();
 
-  if (properties["class"] === 'level') {
+  if (properties.class === 'level') {
     return;
   }
 
-  var color = '#fdfcfa';
+  let color = '#fdfcfa';
 
   if (properties.access && ['no', 'private'].includes(properties.access)) {
     color = '#F2F1F0';
-  } else if (properties.is_poi && properties["class"] !== 'corridor') {
+  } else if (properties.is_poi && properties.class !== 'corridor') {
     color = '#D4EDFF';
-  } else if (properties["class"] === 'room') {
+  } else if (properties.class === 'room') {
     color = '#fefee2';
   }
 
-  var stroke;
+  let stroke;
 
-  if (properties.layer === 'area' && ['area', 'corridor', 'plaform'].includes(properties["class"])) {
+  if (properties.layer === 'area' && ['area', 'corridor', 'plaform'].includes(properties.class)) {
     stroke = new Stroke({
       color: '#bfbfbf',
       width: 1
     });
   }
 
-  if (properties.layer === 'area' && properties["class"] === 'column') {
+  if (properties.layer === 'area' && properties.class === 'column') {
     color = '#bfbfbf';
   }
 
-  if (properties.layer === 'area' && ['room', 'wall'].includes(properties["class"])) {
+  if (properties.layer === 'area' && ['room', 'wall'].includes(properties.class)) {
     stroke = new Stroke({
       color: 'gray',
       width: 2
@@ -359,9 +158,9 @@ function areaLayer(feature, resolution) {
 
   return new Style({
     fill: new Fill({
-      color: color
+      color
     }),
-    stroke: stroke
+    stroke
   });
 }
 
@@ -378,49 +177,146 @@ function transportationLayer(feature, resolution) {
 function areanameLayer(feature, resolution) {
   return new Style({
     text: new Text({
+      font: '13px Noto Sans Regular, sans-serif',
       text: feature.getProperties().name,
       fill: new Fill({
         color: '#666'
+      }),
+      stroke: new Stroke({
+        color: 'white',
+        width: 1
       })
     })
   });
 }
 
-function poiLayer(feature, resolution) {
+function poiLayer(feature, resolution, map, sprite) {
+  const properties = feature.getProperties();
+  const zoom = map.getView().getZoomForResolution(resolution);
+
+  if (zoom < 19 && ['waste_basket', 'information', 'vending_machine'].includes(properties.class)) {
+    return;
+  }
+
+  let icon;
+
+  if (sprite) {
+    const iconDef = sprite.json['indoorequal-' + properties.subclass] || sprite.json['indoorequal-' + properties.class];
+
+    if (iconDef) {
+      icon = new Icon({
+        img: sprite.png,
+        size: [iconDef.width, iconDef.height],
+        offset: [iconDef.x, iconDef.y],
+        imgSize: [sprite.png.width, sprite.png.height]
+      });
+    }
+  }
+
   return new Style({
     text: new Text({
-      text: feature.getProperties().name,
+      font: '11px Noto Sans Regular, sans-serif',
+      text: properties.name,
       fill: new Fill({
         color: '#666'
+      }),
+      offsetY: 18,
+      stroke: new Stroke({
+        color: 'white',
+        width: 1
       })
-    })
+    }),
+    image: icon
   });
 }
 
-function defaultStyle(feature, resolution) {
-  var properties = feature.getProperties();
+function loadAsImage(spriteImageUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
 
-  if (properties.layer === 'area') {
-    return areaLayer(feature);
+    img.onload = function () {
+      img.onload = null;
+      resolve(img);
+    };
+
+    img.onerror = reject;
+    img.src = spriteImageUrl;
+  });
+}
+
+async function loadSprite(basePath) {
+  const spriteScale = window.devicePixelRatio >= 1.5 ? 0.5 : 1;
+  const sizeFactor = spriteScale == 0.5 ? '@2x' : '';
+  let spriteUrl = basePath + sizeFactor + '.json';
+  const spriteJSON = await (await fetch(spriteUrl, {
+    credentials: 'same-origin'
+  })).json();
+  const spritePNG = await loadAsImage(basePath + sizeFactor + '.png');
+  return {
+    json: spriteJSON,
+    png: spritePNG
+  };
+}
+
+function defaultStyle(map, layer, spriteBaseUrl) {
+  let sprite = null;
+
+  if (spriteBaseUrl) {
+    loadSprite(spriteBaseUrl).then(spriteData => {
+      layer.changed();
+      sprite = spriteData;
+    });
   }
 
-  if (properties.layer === 'transportation') {
-    return transportationLayer();
+  return function (feature, resolution) {
+    const properties = feature.getProperties();
+
+    if (properties.layer === 'area') {
+      return areaLayer(feature);
+    }
+
+    if (properties.layer === 'transportation') {
+      return transportationLayer();
+    }
+
+    if (properties.layer === 'area_name') {
+      return areanameLayer(feature);
+    }
+
+    if (properties.layer === 'poi' && feature.getType() === 'Point') {
+      return poiLayer(feature, resolution, map, sprite);
+    }
+  };
+}
+
+function findAllLevels(features) {
+  const levels = [];
+
+  for (let i = 0; i < features.length; i++) {
+    const feature = features[i];
+    const properties = feature.getProperties();
+
+    if (properties.layer !== 'area' || properties.class === 'level') {
+      continue;
+    }
+
+    const level = properties.level;
+
+    if (!levels.includes(level)) {
+      levels.push(level);
+    }
   }
 
-  if (properties.layer === 'area_name') {
-    return areanameLayer(feature);
-  }
-
-  if (properties.layer === 'poi' && feature.getType() === 'Point') {
-    return poiLayer(feature);
-  }
+  return levels.sort((a, b) => a - b).reverse();
 }
 
 /**
  * Load the indoor= source and layers in your map.
  * @param {object} map the OpenLayers instance of the map
  * @param {object} options
+ * @param {boolean} [options.defaultStyle] False to not set the default style. Default true.
+ * @param {string} [options.spriteBaseUrl] The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
  * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
  * @param {string} [options.apiKey] The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
  * @fires change:levels
@@ -428,44 +324,36 @@ function defaultStyle(feature, resolution) {
  * @return {IndoorEqual} `this`
  */
 
-var IndoorEqual = /*#__PURE__*/function (_BaseObject) {
-  _inherits(IndoorEqual, _BaseObject);
-
-  var _super = _createSuper(IndoorEqual);
-
-  function IndoorEqual(map) {
-    var _this;
-
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    _classCallCheck(this, IndoorEqual);
-
-    var defaultOpts = {
-      url: 'https://tiles.indoorequal.org/'
+class IndoorEqual extends BaseObject {
+  constructor(map, options = {}) {
+    const defaultOpts = {
+      url: 'https://tiles.indoorequal.org/',
+      defaultStyle: true,
+      spriteBaseUrl: null
     };
-
-    var opts = _objectSpread2(_objectSpread2({}, defaultOpts), options);
+    const opts = { ...defaultOpts,
+      ...options
+    };
 
     if (opts.url === defaultOpts.url && !opts.apiKey) {
       throw 'You must register your apiKey at https://indoorequal.com before and set it as apiKey param.';
     }
 
-    _this = _super.call(this, {
+    super({
       levels: [],
       level: '0'
     });
-    _this.map = map;
-    _this.url = opts.url;
-    _this.apiKey = opts.apiKey;
-    _this.styleFunction = defaultStyle;
+    this.map = map;
+    this.url = opts.url;
+    this.apiKey = opts.apiKey;
 
-    _this._addLayer();
+    this._addLayer();
 
-    _this._changeLayerOnLevelChange();
+    this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.layer, opts.spriteBaseUrl) : null;
 
-    _this._setLayerStyle();
+    this._changeLayerOnLevelChange();
 
-    return _this;
+    this._setLayerStyle();
   }
   /**
    * Set the style for displayed features. This function takes a feature and resolution and returns an array of styles. If set to null, the layer has no style (a null style), so only features that have their own styles will be rendered in the layer. Call setStyle() without arguments to reset to the default style. See module:ol/style for information on the default style.
@@ -473,60 +361,56 @@ var IndoorEqual = /*#__PURE__*/function (_BaseObject) {
    */
 
 
-  _createClass(IndoorEqual, [{
-    key: "setStyle",
-    value: function setStyle(styleFunction) {
-      this.styleFunction = styleFunction;
-    }
-  }, {
-    key: "_addLayer",
-    value: function _addLayer() {
-      var urlParams = this.apiKey ? "?key=".concat(this.apiKey) : '';
-      this.layer = getLayer("".concat(this.url).concat(urlParams));
-      this.map.addLayer(this.layer);
+  setStyle(styleFunction) {
+    this.styleFunction = styleFunction;
+  }
 
-      this._listenForLevels();
-    }
-  }, {
-    key: "_listenForLevels",
-    value: function _listenForLevels() {
-      var _this2 = this;
+  _addLayer() {
+    const urlParams = this.apiKey ? `?key=${this.apiKey}` : '';
+    this.layer = getLayer(`${this.url}${urlParams}`);
+    this.map.addLayer(this.layer);
 
-      this.layer.on('change:source', function () {
-        var source = _this2.layer.getSource();
+    this._listenForLevels();
+  }
 
-        source.on('tileloadend', function () {
-          var extent = _this2.map.getView().calculateExtent(_this2.map.getSize());
-
-          var features = source.getFeaturesInExtent(extent);
-
-          _this2.set('levels', findAllLevels(features));
-        });
+  _listenForLevels() {
+    this.layer.on('change:source', () => {
+      const source = this.layer.getSource();
+      source.on('tileloadend', () => {
+        const extent = this.map.getView().calculateExtent(this.map.getSize());
+        const features = source.getFeaturesInExtent(extent);
+        this.set('levels', findAllLevels(features));
       });
-    }
-  }, {
-    key: "_changeLayerOnLevelChange",
-    value: function _changeLayerOnLevelChange() {
-      var _this3 = this;
+    });
+  }
 
-      this.on('change:level', function () {
-        _this3.layer.changed();
-      });
-    }
-  }, {
-    key: "_setLayerStyle",
-    value: function _setLayerStyle() {
-      var _this4 = this;
+  _changeLayerOnLevelChange() {
+    this.on('change:level', () => {
+      this.layer.changed();
+    });
+  }
 
-      this.layer.setStyle(function (feature, resolution) {
-        if (feature.getProperties().level === _this4.get('level')) {
-          return _this4.styleFunction && _this4.styleFunction(feature, resolution);
-        }
-      });
-    }
-  }]);
+  _setLayerStyle() {
+    this.layer.setStyle((feature, resolution) => {
+      if (feature.getProperties().level === this.get('level')) {
+        return this.styleFunction && this.styleFunction(feature, resolution);
+      }
+    });
+  }
 
-  return IndoorEqual;
-}(BaseObject);
+}
+/**
+ * Emitted when the list of available levels has been updated
+ *
+ * @event IndoorEqual#change:levels
+ * @type {array}
+ */
 
-export { LevelControl, IndoorEqual as default, getLayer };
+/**
+ * Emitted when the current level has been updated
+ *
+ * @event IndoorEqual#levelchange
+ * @type {string} always emitted when the level displayed has changed
+ */
+
+export { LevelControl, IndoorEqual as default, defaultStyle, getLayer };
