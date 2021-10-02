@@ -11,6 +11,11 @@ It provides:
 
 [**See the demo**](https://indoorequal.github.io/openlayers-indoorequal/).
 
+Discover:
+
+*   the frontend: <https://github.com/indoorequal/indoorequal.org>
+*   the backend: <https://github.com/indoorequal/indoorequal>
+
 ## Install
 
 **With NPM**
