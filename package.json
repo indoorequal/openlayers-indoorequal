@@ -21,6 +21,7 @@
     ]
   },
   "dependencies": {
+    "debounce": "^1.2.1",
     "ol": "^6.6.0"
   },
   "devDependencies": {

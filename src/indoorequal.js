@@ -1,4 +1,6 @@
 import BaseObject from 'ol/Object';
+import debounce from 'debounce';
+
 import { getLayer } from './layer';
 import findAllLevels from './levels';
 import defaultStyle from './defaultstyle';
@@ -54,11 +56,14 @@ export default class IndoorEqual extends BaseObject {
     this.layer.on('change:source', () => {
       const source = this.layer.getSource();
 
-      source.on('tileloadend', () => {
+      const refreshLevels = debounce(() => {
         const extent = this.map.getView().calculateExtent(this.map.getSize());
         const features = source.getFeaturesInExtent(extent);
         this.set('levels', findAllLevels(features));
-      });
+      }, 1000);
+
+      source.on('tileloadend', refreshLevels);
+      this.map.getView().on('change:center', refreshLevels);
     });
   }
 

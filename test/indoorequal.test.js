@@ -41,7 +41,8 @@ describe('IndoorEqual', () => {
       addLayer: jest.fn(),
       getView: () => {
         return {
-          calculateExtent: () => 1
+          calculateExtent: () => 1,
+          on() {}
         };
       },
       getSize: jest.fn(),

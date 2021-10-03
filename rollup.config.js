@@ -26,6 +26,7 @@ export default [
   {
     input,
     external: [
+      'debounce',
       'ol',
       'ol/layer/VectorTile',
       'ol/source/VectorTile',
