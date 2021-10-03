@@ -37,8 +37,6 @@ Get your free key at [indoorequal.com](https://indoorequal.com).
 import Map from 'ol/Map';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill.js';
 import IndoorEqual, { LevelControl } from 'openlayers-indoorequal';
 import 'openlayers-indoorequal/openlayers-indoorequal.css';
 
