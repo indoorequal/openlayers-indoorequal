@@ -73,6 +73,16 @@ describe('IndoorEqual', () => {
     tileLoadEndCallback();
   });
 
+  it('reset the level if the current one is not available', () => {
+    const map = { addLayer: jest.fn() };
+    const getLayerReturn = { on: jest.fn(), changed: jest.fn(), setStyle: jest.fn() };
+    getLayer.mockReturnValueOnce(getLayerReturn);
+    const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
+    indoorEqual.set('level', '-1');
+    indoorEqual.set('levels', ['0', '1', '2']);
+    expect(indoorEqual.get('level')).toEqual('0');
+  });
+
   it('allows to set the current level', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), changed: jest.fn(), setStyle: jest.fn() };

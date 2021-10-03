@@ -34,6 +34,7 @@ export default class IndoorEqual extends BaseObject {
     this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.layer, opts.spriteBaseUrl) : null;
     this._changeLayerOnLevelChange();
     this._setLayerStyle();
+    this._resetLevelOnLevelsChange();
   }
 
   /**
@@ -77,6 +78,14 @@ export default class IndoorEqual extends BaseObject {
     this.layer.setStyle((feature, resolution) => {
       if (feature.getProperties().level === this.get('level')) {
         return this.styleFunction && this.styleFunction(feature, resolution);
+      }
+    });
+  }
+
+  _resetLevelOnLevelsChange() {
+    this.on('change:levels', () => {
+      if (!this.get('levels').includes(this.get('level'))) {
+        this.set('level', '0');
       }
     });
   }
