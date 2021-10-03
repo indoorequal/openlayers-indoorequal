@@ -11,6 +11,7 @@ var TileGrid = require('ol/tilegrid/TileGrid');
 var control = require('ol/control');
 var style = require('ol/style');
 var BaseObject = require('ol/Object');
+var debounce = require('debounce');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -20,6 +21,7 @@ var TileJSON__default = /*#__PURE__*/_interopDefaultLegacy(TileJSON);
 var MVT__default = /*#__PURE__*/_interopDefaultLegacy(MVT);
 var TileGrid__default = /*#__PURE__*/_interopDefaultLegacy(TileGrid);
 var BaseObject__default = /*#__PURE__*/_interopDefaultLegacy(BaseObject);
+var debounce__default = /*#__PURE__*/_interopDefaultLegacy(debounce);
 
 function extentFromTileJSON(tileJSON) {
   var bounds = tileJSON.bounds;
@@ -367,6 +369,8 @@ class IndoorEqual extends BaseObject__default["default"] {
     this._changeLayerOnLevelChange();
 
     this._setLayerStyle();
+
+    this._resetLevelOnLevelsChange();
   }
   /**
    * Set the style for displayed features. This function takes a feature and resolution and returns an array of styles. If set to null, the layer has no style (a null style), so only features that have their own styles will be rendered in the layer. Call setStyle() without arguments to reset to the default style. See module:ol/style for information on the default style.
@@ -389,11 +393,13 @@ class IndoorEqual extends BaseObject__default["default"] {
   _listenForLevels() {
     this.layer.on('change:source', () => {
       const source = this.layer.getSource();
-      source.on('tileloadend', () => {
+      const refreshLevels = debounce__default["default"](() => {
         const extent = this.map.getView().calculateExtent(this.map.getSize());
         const features = source.getFeaturesInExtent(extent);
         this.set('levels', findAllLevels(features));
-      });
+      }, 1000);
+      source.on('tileloadend', refreshLevels);
+      this.map.getView().on('change:center', refreshLevels);
     });
   }
 
@@ -407,6 +413,14 @@ class IndoorEqual extends BaseObject__default["default"] {
     this.layer.setStyle((feature, resolution) => {
       if (feature.getProperties().level === this.get('level')) {
         return this.styleFunction && this.styleFunction(feature, resolution);
+      }
+    });
+  }
+
+  _resetLevelOnLevelsChange() {
+    this.on('change:levels', () => {
+      if (!this.get('levels').includes(this.get('level'))) {
+        this.set('level', '0');
       }
     });
   }
