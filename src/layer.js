@@ -4,6 +4,7 @@ import TileJSON from 'ol/source/TileJSON';
 import MVT from 'ol/format/MVT';
 import { fromLonLat } from 'ol/proj';
 import TileGrid from 'ol/tilegrid/TileGrid';
+import Feature from 'ol/Feature';
 
 const MIN_ZOOM_INDOOR = 17;
 
@@ -35,7 +36,9 @@ function createSourceFromTileJSON(tilejson) {
   const maxZoom = tileJSONDoc.maxzoom;
   return new VectorTileSource({
     attributions: tilejson.getAttributions(),
-    format: new MVT(),
+    format: new MVT({
+      featureClass: Feature,
+    }),
     tileGrid: new TileGrid({
       origin: tileGrid.getOrigin(0),
       extent: extent || tileGrid.getExtent(),

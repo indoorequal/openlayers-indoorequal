@@ -143,7 +143,7 @@ export default function defaultStyle(map, layer, spriteBaseUrl) {
     if (properties.layer === 'area_name') {
       return areanameLayer(feature, resolution);
     }
-    if (properties.layer === 'poi' && feature.getType() === 'Point') {
+    if (properties.layer === 'poi') {
       return poiLayer(feature, resolution, map, sprite);
     }
   }
