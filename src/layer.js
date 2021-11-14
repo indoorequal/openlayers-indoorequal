@@ -1,12 +1,16 @@
+import Feature from 'ol/Feature';
+import HeatmapLayer from 'ol/layer/Heatmap';
+import MVT from 'ol/format/MVT';
+import TileGrid from 'ol/tilegrid/TileGrid';
+import TileJSON from 'ol/source/TileJSON';
+import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
-import TileJSON from 'ol/source/TileJSON';
-import MVT from 'ol/format/MVT';
 import { fromLonLat } from 'ol/proj';
-import TileGrid from 'ol/tilegrid/TileGrid';
-import Feature from 'ol/Feature';
+import { tile } from 'ol/loadingstrategy';
 
 const MIN_ZOOM_INDOOR = 17;
+const MAX_ZOOM_HEATMAP = MIN_ZOOM_INDOOR;
 
 function extentFromTileJSON(tileJSON) {
   const bounds = tileJSON.bounds;
@@ -73,8 +77,36 @@ export async function loadSourceFromTileJSON(url) {
 export function getLayer(options) {
   return new VectorTileLayer({
     declutter: true,
-    visible: false,
-    minZoom: MIN_ZOOM_INDOOR,
+    ...options,
+  });
+}
+
+export function createHeatmapSource(source) {
+  const tilegrid = source.getTileGrid();
+  const vectorSource = new VectorSource({
+    loader(extent, resolution, projection, success, failure) {
+      const refresh = () => {
+        const features = source.getFeaturesInExtent(extent);
+        vectorSource.clear(true);
+        vectorSource.addFeatures(features);
+        success(features);
+      }
+      source.on('tileloadend', refresh);
+      refresh();
+    },
+    loadingstrategy: tile(tilegrid)
+  });
+  return vectorSource;
+}
+
+export function getHeatmapLayer(options) {
+  return new HeatmapLayer({
+    maxZoom: MAX_ZOOM_HEATMAP,
+    gradient: [
+      'rgba(102, 103, 173, 0)',
+      'rgba(102, 103, 173, 0.2)',
+      'rgba(102, 103, 173, 0.7)'
+    ],
     ...options,
   });
 }

@@ -1,4 +1,4 @@
-import { LevelControl } from '../src';
+import LevelControl from '../src/level_control';
 
 describe('LevelControl', () => {
   it('create a container', () => {

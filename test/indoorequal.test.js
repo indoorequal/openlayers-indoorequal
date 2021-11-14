@@ -1,7 +1,7 @@
 jest.mock('../src/layer');
 
 import Feature from 'ol/Feature';
-import IndoorEqual, { getLayer, loadSourceFromTileJSON } from '../src/';
+import IndoorEqual, { getLayer, getHeatmapLayer, loadSourceFromTileJSON } from '../src/';
 
 describe('IndoorEqual', () => {
   it('get the indoorequal layer with the default url', () => {
@@ -10,8 +10,7 @@ describe('IndoorEqual', () => {
     getLayer.mockReturnValueOnce(getLayerReturn);
     loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     new IndoorEqual(map, { apiKey: 'test' });
-    expect(loadSourceFromTileJSON
-).toHaveBeenCalledWith('https://tiles.indoorequal.org/?key=test');
+    expect(loadSourceFromTileJSON).toHaveBeenCalledWith('https://tiles.indoorequal.org/?key=test');
   });
 
   it('throws an error if the apiKey is not defined with the default tiles url', () => {
@@ -29,18 +28,16 @@ describe('IndoorEqual', () => {
     expect(loadSourceFromTileJSON).toHaveBeenCalledWith('http://localhost:8090/');
   });
 
-  it('load and add the the indoorequal layer', () => {
+  it('load and add the the indoorequal layer and the heatmap layer', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
     loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     new IndoorEqual(map, { apiKey: 'test' });
-    expect(map.addLayer.mock.calls.length).toEqual(1);
+    expect(map.addLayer.mock.calls.length).toEqual(2);
   });
 
   it('expose the available levels', (done) => {
-    let tileLoadEndCallback;
-
     const map = {
       addLayer: jest.fn(),
       getView: () => {
@@ -51,33 +48,31 @@ describe('IndoorEqual', () => {
       },
       getSize: jest.fn(),
     };
+    const source = {
+      on: (_eventName, callback) => callback(),
+      getFeaturesInExtent: () => {
+        return [
+          new Feature({ layer: 'area', level: 0 }),
+          new Feature({ layer: 'area', level: 1 }),
+          new Feature({ layer: 'area', level: -2 }),
+        ];
+      }
+    }
     const getLayerReturn = {
       on: (_eventName, callback) => callback(),
       setStyle: jest.fn(),
       setSource: jest.fn(),
       setVisible: jest.fn(),
-      getSource: () => {
-        return {
-          on: (_eventName, callback) => tileLoadEndCallback = callback,
-          getFeaturesInExtent: () => {
-            return [
-              new Feature({ layer: 'area', level: 0 }),
-              new Feature({ layer: 'area', level: 1 }),
-              new Feature({ layer: 'area', level: -2 }),
-            ];
-          }
-        };
-      }
     };
     getLayer.mockReturnValueOnce(getLayerReturn);
-    loadSourceFromTileJSON.mockReturnValueOnce(Promise.resolve());
+    getHeatmapLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(Promise.resolve(source));
     const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
     expect(indoorEqual.get('levels')).toEqual([]);
     indoorEqual.on('change:levels', (levels) => {
       expect(indoorEqual.get('levels')).toEqual([1, 0, -2]);
       done();
     });
-    tileLoadEndCallback();
   });
 
   it('reset the level if the current one is not available', () => {

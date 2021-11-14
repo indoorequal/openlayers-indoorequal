@@ -1,7 +1,7 @@
 import BaseObject from 'ol/Object';
 import debounce from 'debounce';
 
-import { loadSourceFromTileJSON, getLayer } from './layer';
+import { loadSourceFromTileJSON, getLayer, getHeatmapLayer, createHeatmapSource } from './layer';
 import findAllLevels from './levels';
 import defaultStyle from './defaultstyle';
 
@@ -13,13 +13,14 @@ import defaultStyle from './defaultstyle';
  * @param {string} [options.spriteBaseUrl] The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
  * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
  * @param {string} [options.apiKey] The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
+ * @param {boolean} [options.heatmap] Should the heatmap layer be visible at start (true : visible, false : hidden). Defaults to true/visible.
  * @fires change:levels
  * @fires change:level
  * @return {IndoorEqual} `this`
  */
 export default class IndoorEqual extends BaseObject {
   constructor(map, options = {}) {
-    const defaultOpts = { url: 'https://tiles.indoorequal.org/', defaultStyle: true, spriteBaseUrl: null };
+    const defaultOpts = { url: 'https://tiles.indoorequal.org/', defaultStyle: true, spriteBaseUrl: null, heatmap: true };
     const opts = { ...defaultOpts, ...options };
     if (opts.url === defaultOpts.url && !opts.apiKey) {
       throw 'You must register your apiKey at https://indoorequal.com before and set it as apiKey param.';
@@ -30,8 +31,9 @@ export default class IndoorEqual extends BaseObject {
     this.url = opts.url;
     this.apiKey = opts.apiKey;
 
-    this._addLayer();
-    this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.layer, opts.spriteBaseUrl) : null;
+    this._createLayers(opts.heatmap);
+    this._loadSource();
+    this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.indoorLayer, opts.spriteBaseUrl) : null;
     this._changeLayerOnLevelChange();
     this._setLayerStyle();
     this._resetLevelOnLevelsChange();
@@ -45,41 +47,52 @@ export default class IndoorEqual extends BaseObject {
     this.styleFunction = styleFunction;
   }
 
-  _addLayer() {
+  /**
+   * Change the heatmap layer visibility
+   * @param {boolean} visible True to make it visible, false to hide it
+   */
+  setHeatmapVisible(visible) {
+    this.heatmapLayer.setVisible(visible);
+  }
+
+  async _loadSource() {
     const urlParams = this.apiKey ? `?key=${this.apiKey}` : '';
-    this.layer = getLayer();
-    this.map.addLayer(this.layer);
-    loadSourceFromTileJSON(`${this.url}${urlParams}`).then((source) => {
-      this.source = source;
-      this.layer.setSource(source);
-      this.layer.setVisible(true);
-    });
+    this.source = await loadSourceFromTileJSON(`${this.url}${urlParams}`);
+
+    this.indoorLayer.setSource(this.source);
+    this.heatmapLayer.setSource(createHeatmapSource(this.source));
     this._listenForLevels();
   }
 
-  _listenForLevels() {
-    this.layer.on('change:source', () => {
-      const source = this.layer.getSource();
-
-      const refreshLevels = debounce(() => {
-        const extent = this.map.getView().calculateExtent(this.map.getSize());
-        const features = source.getFeaturesInExtent(extent);
-        this.set('levels', findAllLevels(features));
-      }, 1000);
-
-      source.on('tileloadend', refreshLevels);
-      this.map.getView().on('change:center', refreshLevels);
+  _createLayers(heatmapVisible) {
+    this.indoorLayer = getLayer();
+    this.heatmapLayer = getHeatmapLayer({ visible: heatmapVisible });
+    [this.indoorLayer, this.heatmapLayer].forEach((layer) => {
+      this.map.addLayer(layer);
     });
+  }
+
+  _listenForLevels() {
+    const source = this.source;
+
+    const refreshLevels = debounce(() => {
+      const extent = this.map.getView().calculateExtent(this.map.getSize());
+      const features = source.getFeaturesInExtent(extent);
+      this.set('levels', findAllLevels(features));
+    }, 1000);
+
+    source.on('tileloadend', refreshLevels);
+    this.map.getView().on('change:center', refreshLevels);
   }
 
   _changeLayerOnLevelChange() {
     this.on('change:level', () => {
-      this.layer.changed();
+      this.indoorLayer.changed();
     });
   }
 
   _setLayerStyle() {
-    this.layer.setStyle((feature, resolution) => {
+    this.indoorLayer.setStyle((feature, resolution) => {
       if (feature.getProperties().level === this.get('level')) {
         return this.styleFunction && this.styleFunction(feature, resolution);
       }

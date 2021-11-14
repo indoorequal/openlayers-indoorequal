@@ -117,6 +117,8 @@ const indoorequal = new IndoorEqual(map, { apiKey: 'myKey', spriteBaseUrl: '/ind
     *   [Parameters](#parameters-1)
     *   [setStyle](#setstyle)
         *   [Parameters](#parameters-2)
+    *   [setHeatmapVisible](#setheatmapvisible)
+        *   [Parameters](#parameters-3)
 *   [IndoorEqual#change:levels](#indoorequalchangelevels)
 *   [IndoorEqual#levelchange](#indoorequallevelchange)
 
@@ -150,6 +152,7 @@ Load the indoor= source and layers in your map.
     *   `options.spriteBaseUrl` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
     *   `options.url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Override the default tiles URL (<https://tiles.indoorequal.org/>).
     *   `options.apiKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
+    *   `options.heatmap` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Should the heatmap layer be visible at start (true : visible, false : hidden). Defaults to true/visible.
 
 Returns **[IndoorEqual](#indoorequal)** `this`
 
@@ -160,6 +163,14 @@ Set the style for displayed features. This function takes a feature and resoluti
 ##### Parameters
 
 *   `styleFunction` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** the style function
+
+#### setHeatmapVisible
+
+Change the heatmap layer visibility
+
+##### Parameters
+
+*   `visible` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** True to make it visible, false to hide it
 
 ### IndoorEqual#change:levels
 
