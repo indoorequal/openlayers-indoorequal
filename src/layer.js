@@ -45,23 +45,31 @@ function createSourceFromTileJSON(tilejson) {
   });
 }
 
+function loadTileJSON(url) {
+  return new Promise((resolve, reject) => {
+    const tilejson = new TileJSON({ url });
+    tilejson.on('change', function () {
+      const state = tilejson.getState();
+      if (state === 'ready') {
+        resolve(tilejson);
+      }
+    });
+    if (tilejson.getState() === 'ready') {
+      tilejson.changed();
+    }
+  });
+}
+
 export function getLayer(url, options) {
   const layer = new VectorTileLayer({
     declutter: true,
     visible: false,
     ...options,
   });
-  const tilejson = new TileJSON({ url });
-  tilejson.on('change', function () {
-    const state = tilejson.getState();
-    if (state === 'ready') {
-      const source = createSourceFromTileJSON(tilejson);
-      layer.setSource(source);
-      layer.setVisible(true);
-    }
+  const tilejson = loadTileJSON(url).then((tilejson) => {
+    const source = createSourceFromTileJSON(tilejson);
+    layer.setSource(source);
+    layer.setVisible(true);
   });
-  if (tilejson.getState() === 'ready') {
-    tilejson.changed();
-  }
   return layer;
 }
