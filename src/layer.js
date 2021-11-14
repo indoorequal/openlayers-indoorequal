@@ -5,6 +5,8 @@ import MVT from 'ol/format/MVT';
 import { fromLonLat } from 'ol/proj';
 import TileGrid from 'ol/tilegrid/TileGrid';
 
+const MIN_ZOOM_INDOOR = 17;
+
 function extentFromTileJSON(tileJSON) {
   const bounds = tileJSON.bounds;
   if (bounds) {
@@ -64,6 +66,7 @@ export function getLayer(url, options) {
   const layer = new VectorTileLayer({
     declutter: true,
     visible: false,
+    minZoom: MIN_ZOOM_INDOOR,
     ...options,
   });
   const tilejson = loadTileJSON(url).then((tilejson) => {
