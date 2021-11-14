@@ -53,21 +53,23 @@ export default class IndoorEqual extends BaseObject {
       this.source = source;
       this.layer.setSource(source);
       this.layer.setVisible(true);
-      this._listenForLevels();
     });
+    this._listenForLevels();
   }
 
   _listenForLevels() {
-    const source = this.layer.getSource();
+    this.layer.on('change:source', () => {
+      const source = this.layer.getSource();
 
-    const refreshLevels = debounce(() => {
-      const extent = this.map.getView().calculateExtent(this.map.getSize());
-      const features = source.getFeaturesInExtent(extent);
-      this.set('levels', findAllLevels(features));
-    }, 1000);
+      const refreshLevels = debounce(() => {
+        const extent = this.map.getView().calculateExtent(this.map.getSize());
+        const features = source.getFeaturesInExtent(extent);
+        this.set('levels', findAllLevels(features));
+      }, 1000);
 
-    source.on('tileloadend', refreshLevels);
-    this.map.getView().on('change:center', refreshLevels);
+      source.on('tileloadend', refreshLevels);
+      this.map.getView().on('change:center', refreshLevels);
+    });
   }
 
   _changeLayerOnLevelChange() {

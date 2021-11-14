@@ -1,15 +1,17 @@
 jest.mock('../src/layer');
 
 import Feature from 'ol/Feature';
-import IndoorEqual, { getLayer } from '../src/';
+import IndoorEqual, { getLayer, loadSourceFromTileJSON } from '../src/';
 
 describe('IndoorEqual', () => {
   it('get the indoorequal layer with the default url', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     new IndoorEqual(map, { apiKey: 'test' });
-    expect(getLayer).toHaveBeenCalledWith('https://tiles.indoorequal.org/?key=test');
+    expect(loadSourceFromTileJSON
+).toHaveBeenCalledWith('https://tiles.indoorequal.org/?key=test');
   });
 
   it('throws an error if the apiKey is not defined with the default tiles url', () => {
@@ -22,14 +24,16 @@ describe('IndoorEqual', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     new IndoorEqual(map, { url: 'http://localhost:8090/' });
-    expect(getLayer).toHaveBeenCalledWith('http://localhost:8090/');
+    expect(loadSourceFromTileJSON).toHaveBeenCalledWith('http://localhost:8090/');
   });
 
   it('load and add the the indoorequal layer', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     new IndoorEqual(map, { apiKey: 'test' });
     expect(map.addLayer.mock.calls.length).toEqual(1);
   });
@@ -50,6 +54,8 @@ describe('IndoorEqual', () => {
     const getLayerReturn = {
       on: (_eventName, callback) => callback(),
       setStyle: jest.fn(),
+      setSource: jest.fn(),
+      setVisible: jest.fn(),
       getSource: () => {
         return {
           on: (_eventName, callback) => tileLoadEndCallback = callback,
@@ -64,6 +70,7 @@ describe('IndoorEqual', () => {
       }
     };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(Promise.resolve());
     const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
     expect(indoorEqual.get('levels')).toEqual([]);
     indoorEqual.on('change:levels', (levels) => {
@@ -77,6 +84,7 @@ describe('IndoorEqual', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), changed: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
     indoorEqual.set('level', '-1');
     indoorEqual.set('levels', ['0', '1', '2']);
@@ -87,6 +95,7 @@ describe('IndoorEqual', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), changed: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     const indoorEqual = new IndoorEqual(map, { apiKey: 'test' });
     expect(indoorEqual.get('level')).toEqual('0');
     indoorEqual.set('level', '1');
@@ -99,6 +108,7 @@ describe('IndoorEqual', () => {
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     const stylefunction = jest.fn();
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     const indoorEqual = new IndoorEqual(map, { url: 'http://localhost:8090/' });
     indoorEqual.setStyle(stylefunction);
     expect(getLayerReturn.setStyle.mock.calls.length).toEqual(1);
@@ -112,6 +122,7 @@ describe('IndoorEqual', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
+    loadSourceFromTileJSON.mockReturnValueOnce(new Promise(() => {}));
     const indoorEqual = new IndoorEqual(map, { url: 'http://localhost:8090/' });
     indoorEqual.setStyle();
     expect(() => {
