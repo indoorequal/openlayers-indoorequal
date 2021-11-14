@@ -22,7 +22,7 @@ const defaultResolutions = (function () {
   return resolutions;
 })();
 
-function onTileJSONLoaded(layer, tilejson) {
+function createSourceFromTileJSON(tilejson) {
   const tileJSONDoc = tilejson.getTileJSON();
   const tiles = Array.isArray(tileJSONDoc.tiles)
         ? tileJSONDoc.tiles
@@ -31,7 +31,7 @@ function onTileJSONLoaded(layer, tilejson) {
   const extent = extentFromTileJSON(tileJSONDoc);
   const minZoom = tileJSONDoc.minzoom;
   const maxZoom = tileJSONDoc.maxzoom;
-  const source = new VectorTileSource({
+  return new VectorTileSource({
     attributions: tilejson.getAttributions(),
     format: new MVT(),
     tileGrid: new TileGrid({
@@ -43,8 +43,6 @@ function onTileJSONLoaded(layer, tilejson) {
     }),
     urls: tiles,
   });
-  layer.setSource(source);
-  layer.setVisible(true);
 }
 
 export function getLayer(url, options) {
@@ -57,7 +55,9 @@ export function getLayer(url, options) {
   tilejson.on('change', function () {
     const state = tilejson.getState();
     if (state === 'ready') {
-      onTileJSONLoaded(layer, tilejson);
+      const source = createSourceFromTileJSON(tilejson);
+      layer.setSource(source);
+      layer.setVisible(true);
     }
   });
   if (tilejson.getState() === 'ready') {
