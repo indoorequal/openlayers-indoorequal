@@ -6,12 +6,12 @@ import { fromLonLat } from 'ol/proj';
 import TileGrid from 'ol/tilegrid/TileGrid';
 
 function extentFromTileJSON(tileJSON) {
-    var bounds = tileJSON.bounds;
-    if (bounds) {
-        var ll = fromLonLat([bounds[0], bounds[1]]);
-        var tr = fromLonLat([bounds[2], bounds[3]]);
-        return [ll[0], ll[1], tr[0], tr[1]];
-    }
+  const bounds = tileJSON.bounds;
+  if (bounds) {
+    const ll = fromLonLat([bounds[0], bounds[1]]);
+    const tr = fromLonLat([bounds[2], bounds[3]]);
+    return [ll[0], ll[1], tr[0], tr[1]];
+  }
 }
 
 const defaultResolutions = (function () {
