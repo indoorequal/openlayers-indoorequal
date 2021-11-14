@@ -1,7 +1,7 @@
 import BaseObject from 'ol/Object';
 import debounce from 'debounce';
 
-import { getLayer } from './layer';
+import { loadSourceFromTileJSON, getLayer } from './layer';
 import findAllLevels from './levels';
 import defaultStyle from './defaultstyle';
 
@@ -47,25 +47,27 @@ export default class IndoorEqual extends BaseObject {
 
   _addLayer() {
     const urlParams = this.apiKey ? `?key=${this.apiKey}` : '';
-    this.layer = getLayer(`${this.url}${urlParams}`);
+    this.layer = getLayer();
     this.map.addLayer(this.layer);
-
-    this._listenForLevels();
+    loadSourceFromTileJSON(`${this.url}${urlParams}`).then((source) => {
+      this.source = source;
+      this.layer.setSource(source);
+      this.layer.setVisible(true);
+      this._listenForLevels();
+    });
   }
 
   _listenForLevels() {
-    this.layer.on('change:source', () => {
-      const source = this.layer.getSource();
+    const source = this.layer.getSource();
 
-      const refreshLevels = debounce(() => {
-        const extent = this.map.getView().calculateExtent(this.map.getSize());
-        const features = source.getFeaturesInExtent(extent);
-        this.set('levels', findAllLevels(features));
-      }, 1000);
+    const refreshLevels = debounce(() => {
+      const extent = this.map.getView().calculateExtent(this.map.getSize());
+      const features = source.getFeaturesInExtent(extent);
+      this.set('levels', findAllLevels(features));
+    }, 1000);
 
-      source.on('tileloadend', refreshLevels);
-      this.map.getView().on('change:center', refreshLevels);
-    });
+    source.on('tileloadend', refreshLevels);
+    this.map.getView().on('change:center', refreshLevels);
   }
 
   _changeLayerOnLevelChange() {

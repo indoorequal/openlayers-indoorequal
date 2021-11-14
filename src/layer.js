@@ -65,17 +65,16 @@ function loadTileJSON(url) {
   });
 }
 
-export function getLayer(url, options) {
-  const layer = new VectorTileLayer({
+export async function loadSourceFromTileJSON(url) {
+  const tilejson = await loadTileJSON(url);
+  return createSourceFromTileJSON(tilejson);
+}
+
+export function getLayer(options) {
+  return new VectorTileLayer({
     declutter: true,
     visible: false,
     minZoom: MIN_ZOOM_INDOOR,
     ...options,
   });
-  const tilejson = loadTileJSON(url).then((tilejson) => {
-    const source = createSourceFromTileJSON(tilejson);
-    layer.setSource(source);
-    layer.setVisible(true);
-  });
-  return layer;
 }
