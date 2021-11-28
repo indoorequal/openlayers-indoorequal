@@ -1,20 +1,27 @@
+import Feature from 'ol/Feature';
+import HeatmapLayer from 'ol/layer/Heatmap';
+import MVT from 'ol/format/MVT';
+import TileGrid from 'ol/tilegrid/TileGrid';
+import TileJSON from 'ol/source/TileJSON';
+import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
-import TileJSON from 'ol/source/TileJSON';
-import MVT from 'ol/format/MVT';
 import { fromLonLat } from 'ol/proj';
-import TileGrid from 'ol/tilegrid/TileGrid';
+import { tile } from 'ol/loadingstrategy';
 import { Control } from 'ol/control';
 import { Style, Stroke, Text, Fill, Icon } from 'ol/style';
 import BaseObject from 'ol/Object';
 import debounce from 'debounce';
 
+const MIN_ZOOM_INDOOR = 17;
+const MAX_ZOOM_HEATMAP = MIN_ZOOM_INDOOR;
+
 function extentFromTileJSON(tileJSON) {
-  var bounds = tileJSON.bounds;
+  const bounds = tileJSON.bounds;
 
   if (bounds) {
-    var ll = fromLonLat([bounds[0], bounds[1]]);
-    var tr = fromLonLat([bounds[2], bounds[3]]);
+    const ll = fromLonLat([bounds[0], bounds[1]]);
+    const tr = fromLonLat([bounds[2], bounds[3]]);
     return [ll[0], ll[1], tr[0], tr[1]];
   }
 }
@@ -29,16 +36,18 @@ const defaultResolutions = function () {
   return resolutions;
 }();
 
-function onTileJSONLoaded(layer, tilejson) {
+function createSourceFromTileJSON(tilejson) {
   const tileJSONDoc = tilejson.getTileJSON();
   const tiles = Array.isArray(tileJSONDoc.tiles) ? tileJSONDoc.tiles : [tileJSONDoc.tiles];
   const tileGrid = tilejson.getTileGrid();
   const extent = extentFromTileJSON(tileJSONDoc);
   const minZoom = tileJSONDoc.minzoom;
   const maxZoom = tileJSONDoc.maxzoom;
-  const source = new VectorTileSource({
+  return new VectorTileSource({
     attributions: tilejson.getAttributions(),
-    format: new MVT(),
+    format: new MVT({
+      featureClass: Feature
+    }),
     tileGrid: new TileGrid({
       origin: tileGrid.getOrigin(0),
       extent: extent || tileGrid.getExtent(),
@@ -48,32 +57,62 @@ function onTileJSONLoaded(layer, tilejson) {
     }),
     urls: tiles
   });
-  layer.setSource(source);
-  layer.setVisible(true);
 }
 
-function getLayer(url, options) {
-  const layer = new VectorTileLayer({
-    declutter: true,
-    visible: false,
-    ...options
-  });
-  const tilejson = new TileJSON({
-    url
-  });
-  tilejson.on('change', function () {
-    const state = tilejson.getState();
+function loadTileJSON(url) {
+  return new Promise((resolve, reject) => {
+    const tilejson = new TileJSON({
+      url
+    });
+    tilejson.on('change', function () {
+      const state = tilejson.getState();
 
-    if (state === 'ready') {
-      onTileJSONLoaded(layer, tilejson);
+      if (state === 'ready') {
+        resolve(tilejson);
+      }
+    });
+
+    if (tilejson.getState() === 'ready') {
+      tilejson.changed();
     }
   });
+}
 
-  if (tilejson.getState() === 'ready') {
-    tilejson.changed();
-  }
+async function loadSourceFromTileJSON(url) {
+  const tilejson = await loadTileJSON(url);
+  return createSourceFromTileJSON(tilejson);
+}
+function getLayer(options) {
+  return new VectorTileLayer({
+    declutter: true,
+    ...options
+  });
+}
+function createHeatmapSource(source) {
+  const tilegrid = source.getTileGrid();
+  const vectorSource = new VectorSource({
+    loader(extent, resolution, projection, success, failure) {
+      const refresh = () => {
+        const features = source.getFeaturesInExtent(extent);
+        vectorSource.clear(true);
+        vectorSource.addFeatures(features);
+        success(features);
+      };
 
-  return layer;
+      source.on('tileloadend', refresh);
+      refresh();
+    },
+
+    loadingstrategy: tile(tilegrid)
+  });
+  return vectorSource;
+}
+function getHeatmapLayer(options) {
+  return new HeatmapLayer({
+    maxZoom: MAX_ZOOM_HEATMAP,
+    gradient: ['rgba(102, 103, 173, 0)', 'rgba(102, 103, 173, 0.2)', 'rgba(102, 103, 173, 0.7)'],
+    ...options
+  });
 }
 
 /**
@@ -139,18 +178,18 @@ function areaLayer(feature, resolution) {
 
   let stroke;
 
-  if (properties.layer === 'area' && ['area', 'corridor', 'plaform'].includes(properties.class)) {
+  if (['area', 'corridor', 'plaform'].includes(properties.class)) {
     stroke = new Stroke({
       color: '#bfbfbf',
       width: 1
     });
   }
 
-  if (properties.layer === 'area' && properties.class === 'column') {
+  if (properties.class === 'column') {
     color = '#bfbfbf';
   }
 
-  if (properties.layer === 'area' && ['room', 'wall'].includes(properties.class)) {
+  if (['room', 'wall'].includes(properties.class)) {
     stroke = new Stroke({
       color: 'gray',
       width: 2
@@ -285,7 +324,7 @@ function defaultStyle(map, layer, spriteBaseUrl) {
       return areanameLayer(feature);
     }
 
-    if (properties.layer === 'poi' && feature.getType() === 'Point') {
+    if (properties.layer === 'poi') {
       return poiLayer(feature, resolution, map, sprite);
     }
   };
@@ -320,6 +359,7 @@ function findAllLevels(features) {
  * @param {string} [options.spriteBaseUrl] The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
  * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
  * @param {string} [options.apiKey] The API key if you use the default tile URL (get your free key at [indoorequal.com](https://indoorequal.com)).
+ * @param {boolean} [options.heatmap] Should the heatmap layer be visible at start (true : visible, false : hidden). Defaults to true/visible.
  * @fires change:levels
  * @fires change:level
  * @return {IndoorEqual} `this`
@@ -330,7 +370,8 @@ class IndoorEqual extends BaseObject {
     const defaultOpts = {
       url: 'https://tiles.indoorequal.org/',
       defaultStyle: true,
-      spriteBaseUrl: null
+      spriteBaseUrl: null,
+      heatmap: true
     };
     const opts = { ...defaultOpts,
       ...options
@@ -348,9 +389,11 @@ class IndoorEqual extends BaseObject {
     this.url = opts.url;
     this.apiKey = opts.apiKey;
 
-    this._addLayer();
+    this._createLayers(opts.heatmap);
 
-    this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.layer, opts.spriteBaseUrl) : null;
+    this._loadSource();
+
+    this.styleFunction = opts.defaultStyle ? defaultStyle(this.map, this.indoorLayer, opts.spriteBaseUrl) : null;
 
     this._changeLayerOnLevelChange();
 
@@ -367,36 +410,54 @@ class IndoorEqual extends BaseObject {
   setStyle(styleFunction) {
     this.styleFunction = styleFunction;
   }
+  /**
+   * Change the heatmap layer visibility
+   * @param {boolean} visible True to make it visible, false to hide it
+   */
 
-  _addLayer() {
+
+  setHeatmapVisible(visible) {
+    this.heatmapLayer.setVisible(visible);
+  }
+
+  async _loadSource() {
     const urlParams = this.apiKey ? `?key=${this.apiKey}` : '';
-    this.layer = getLayer(`${this.url}${urlParams}`);
-    this.map.addLayer(this.layer);
+    this.source = await loadSourceFromTileJSON(`${this.url}${urlParams}`);
+    this.indoorLayer.setSource(this.source);
+    this.heatmapLayer.setSource(createHeatmapSource(this.source));
 
     this._listenForLevels();
   }
 
-  _listenForLevels() {
-    this.layer.on('change:source', () => {
-      const source = this.layer.getSource();
-      const refreshLevels = debounce(() => {
-        const extent = this.map.getView().calculateExtent(this.map.getSize());
-        const features = source.getFeaturesInExtent(extent);
-        this.set('levels', findAllLevels(features));
-      }, 1000);
-      source.on('tileloadend', refreshLevels);
-      this.map.getView().on('change:center', refreshLevels);
+  _createLayers(heatmapVisible) {
+    this.indoorLayer = getLayer();
+    this.heatmapLayer = getHeatmapLayer({
+      visible: heatmapVisible
     });
+    [this.indoorLayer, this.heatmapLayer].forEach(layer => {
+      this.map.addLayer(layer);
+    });
+  }
+
+  _listenForLevels() {
+    const source = this.source;
+    const refreshLevels = debounce(() => {
+      const extent = this.map.getView().calculateExtent(this.map.getSize());
+      const features = source.getFeaturesInExtent(extent);
+      this.set('levels', findAllLevels(features));
+    }, 1000);
+    source.on('tileloadend', refreshLevels);
+    this.map.getView().on('change:center', refreshLevels);
   }
 
   _changeLayerOnLevelChange() {
     this.on('change:level', () => {
-      this.layer.changed();
+      this.indoorLayer.changed();
     });
   }
 
   _setLayerStyle() {
-    this.layer.setStyle((feature, resolution) => {
+    this.indoorLayer.setStyle((feature, resolution) => {
       if (feature.getProperties().level === this.get('level')) {
         return this.styleFunction && this.styleFunction(feature, resolution);
       }
@@ -426,4 +487,4 @@ class IndoorEqual extends BaseObject {
  * @type {string} always emitted when the level displayed has changed
  */
 
-export { LevelControl, IndoorEqual as default, defaultStyle, getLayer };
+export { LevelControl, IndoorEqual as default, defaultStyle, getHeatmapLayer, getLayer, loadSourceFromTileJSON };
