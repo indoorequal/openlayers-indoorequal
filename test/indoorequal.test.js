@@ -28,7 +28,7 @@ describe('IndoorEqual', () => {
     expect(loadSourceFromTileJSON).toHaveBeenCalledWith('http://localhost:8090/');
   });
 
-  it('load and add the the indoorequal layer and the heatmap layer', () => {
+  it('load and add the indoorequal layer and the heatmap layer', () => {
     const map = { addLayer: jest.fn() };
     const getLayerReturn = { on: jest.fn(), setStyle: jest.fn() };
     getLayer.mockReturnValueOnce(getLayerReturn);
