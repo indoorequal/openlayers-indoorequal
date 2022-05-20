@@ -6,6 +6,23 @@ import pkg from './package.json';
 
 const input = 'src/index.js';
 
+const externalOL = [
+  'ol',
+  'ol/Feature',
+  'ol/Object',
+  'ol/control',
+  'ol/format/MVT',
+  'ol/layer/Heatmap',
+  'ol/layer/VectorTile',
+  'ol/loadingstrategy',
+  'ol/proj',
+  'ol/source/TileJSON',
+  'ol/source/Vector',
+  'ol/source/VectorTile',
+  'ol/style',
+  'ol/tilegrid/TileGrid'
+];
+
 export default [
   {
     input,
@@ -14,7 +31,23 @@ export default [
       file: pkg.browser,
       format: 'umd',
       exports: 'named',
+      globals: {
+        'ol/Feature': 'ol.Feature',
+        'ol/Object': 'ol.Object',
+        'ol/control': 'ol.control',
+        'ol/format/MVT': 'ol.format.MVT',
+        'ol/layer/Heatmap': 'ol.layer.Heatmap',
+        'ol/layer/VectorTile': 'ol.layer.VectorTile',
+        'ol/loadingstrategy': 'ol.loadingstrategy',
+        'ol/proj': 'ol.proj',
+        'ol/source/TileJSON': 'ol.source.TileJSON',
+        'ol/source/Vector': 'ol.source.Vector',
+        'ol/source/VectorTile': 'ol.source.VectorTile',
+        'ol/style': 'ol.style',
+        'ol/tilegrid/TileGrid': 'ol.tilegrid.TileGrid'
+      }
     },
+    external: externalOL,
     context: 'window',
     plugins: [
       babel({ babelHelpers: 'bundled' }),
@@ -27,20 +60,7 @@ export default [
     input,
     external: [
       'debounce',
-      'ol',
-      'ol/Feature',
-      'ol/Object',
-      'ol/control',
-      'ol/format/MVT',
-      'ol/layer/Heatmap',
-      'ol/layer/VectorTile',
-      'ol/loadingstrategy',
-      'ol/proj',
-      'ol/source/TileJSON',
-      'ol/source/Vector',
-      'ol/source/VectorTile',
-      'ol/style',
-      'ol/tilegrid/TileGrid',
+      ...externalOL,
     ],
     output: [
       { file: pkg.main, format: 'cjs', exports: 'named' },
