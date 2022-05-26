@@ -31,21 +31,10 @@ export default [
       file: pkg.browser,
       format: 'umd',
       exports: 'named',
-      globals: {
-        'ol/Feature': 'ol.Feature',
-        'ol/Object': 'ol.Object',
-        'ol/control': 'ol.control',
-        'ol/format/MVT': 'ol.format.MVT',
-        'ol/layer/Heatmap': 'ol.layer.Heatmap',
-        'ol/layer/VectorTile': 'ol.layer.VectorTile',
-        'ol/loadingstrategy': 'ol.loadingstrategy',
-        'ol/proj': 'ol.proj',
-        'ol/source/TileJSON': 'ol.source.TileJSON',
-        'ol/source/Vector': 'ol.source.Vector',
-        'ol/source/VectorTile': 'ol.source.VectorTile',
-        'ol/style': 'ol.style',
-        'ol/tilegrid/TileGrid': 'ol.tilegrid.TileGrid'
-      }
+      globals: externalOL.reduce((memo, key) => {
+        memo[key] = key.replaceAll('/', '.')
+        return memo;
+      }, {})
     },
     external: externalOL,
     context: 'window',
