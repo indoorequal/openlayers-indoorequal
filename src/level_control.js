@@ -3,7 +3,7 @@ import { Control } from 'ol/control';
 /**
  * A control to display the available levels
  * @param {IndoorEqual} indoorEqual the IndoorEqual instance
- * @param {object} options
+ * @param {Object} options
  * @param {string} [options.target] Specify a target if you want the control to be rendered outside of the map's viewport.
  * @return {LevelControl} `this`
  */

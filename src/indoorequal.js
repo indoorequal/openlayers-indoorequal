@@ -7,8 +7,8 @@ import defaultStyle from './defaultstyle';
 
 /**
  * Load the indoor= source and layers in your map.
- * @param {object} map the OpenLayers instance of the map
- * @param {object} options
+ * @param {Object} map the OpenLayers instance of the map
+ * @param {Object} options
  * @param {boolean} [options.defaultStyle] False to not set the default style. Default true.
  * @param {string} [options.spriteBaseUrl] The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
  * @param {string} [options.url] Override the default tiles URL (https://tiles.indoorequal.org/).
@@ -112,7 +112,7 @@ export default class IndoorEqual extends BaseObject {
  * Emitted when the list of available levels has been updated
  *
  * @event IndoorEqual#change:levels
- * @type {array}
+ * @type {Array}
  */
 
 /**
