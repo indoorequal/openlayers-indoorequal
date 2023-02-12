@@ -1,4 +1,4 @@
-# openlayers-indoorequal ![build](https://img.shields.io/github/workflow/status/indoorequal/openlayers-indoorequal/CI) [![npm](https://img.shields.io/npm/v/openlayers-indoorequal)](https://www.npmjs.com/package/openlayers-indoorequal)
+# openlayers-indoorequal ![build](https://img.shields.io/github/actions/workflow/status/indoorequal/openlayers-indoorequal/ci.yml?branch=main) [![npm](https://img.shields.io/npm/v/openlayers-indoorequal)](https://www.npmjs.com/package/openlayers-indoorequal)
 
 openlayers-indoorequal is an [OpenLayers][ol] library to display indoor data from [indoor=][].
 
