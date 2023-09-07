@@ -16,6 +16,11 @@ Discover:
 *   the frontend: <https://github.com/indoorequal/indoorequal.org>
 *   the backend: <https://github.com/indoorequal/indoorequal>
 
+## OpenLayers compatibility
+
+- OL < 8: use version 0.0.8
+- OL 8: use version >= 0.1.0
+
 ## Install
 
 **With NPM**

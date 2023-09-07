@@ -5652,7 +5652,7 @@ __metadata:
     ol: ^8.1.0
     rollup: ^3.29.0
   peerDependencies:
-    ol: ^7.1.0
+    ol: ^8.0.0
   languageName: unknown
   linkType: soft
 
