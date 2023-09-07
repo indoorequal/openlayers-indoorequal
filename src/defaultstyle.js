@@ -78,7 +78,6 @@ function poiLayer(feature, resolution, map, sprite) {
         img: sprite.png,
         size: [iconDef.width, iconDef.height],
         offset: [iconDef.x, iconDef.y],
-        imgSize: [sprite.png.width, sprite.png.height]
       });
     }
   }
