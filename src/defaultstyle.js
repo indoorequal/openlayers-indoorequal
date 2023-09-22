@@ -16,7 +16,7 @@ function areaLayer(feature, resolution) {
 
   let stroke;
 
-  if (['area', 'corridor', 'plaform'].includes(properties.class)) {
+  if (['area', 'corridor', 'platform'].includes(properties.class)) {
     stroke = new Stroke({
       color: '#bfbfbf',
       width: 1
