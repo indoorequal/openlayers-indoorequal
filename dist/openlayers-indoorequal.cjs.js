@@ -158,7 +158,7 @@ function areaLayer(feature, resolution) {
     color = '#fefee2';
   }
   let stroke;
-  if (['area', 'corridor', 'plaform'].includes(properties.class)) {
+  if (['area', 'corridor', 'platform'].includes(properties.class)) {
     stroke = new style.Stroke({
       color: '#bfbfbf',
       width: 1
