@@ -20,7 +20,7 @@
     ],
     "testEnvironment": "jsdom",
     "transformIgnorePatterns": [
-      "node_modules/(?!(ol)/)"
+      "node_modules/(?!(ol|color-space|color-parse|color-rgba)/)"
     ]
   },
   "peerDependencies": {
