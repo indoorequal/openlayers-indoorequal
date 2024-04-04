@@ -380,8 +380,8 @@ class IndoorEqual extends BaseObject {
       const features = source.getFeaturesInExtent(extent);
       this.set('levels', findAllLevels(features));
     }, 1000);
-    source.on('tileloadend', refreshLevels);
-    this.map.getView().on('change:center', refreshLevels);
+    source.on('tileloadend', () => refreshLevels());
+    this.map.getView().on('change:center', () => refreshLevels());
   }
   _changeLayerOnLevelChange() {
     this.on('change:level', () => {
