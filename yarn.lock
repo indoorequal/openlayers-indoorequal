@@ -6181,7 +6181,7 @@ __metadata:
     ol: ^9.1.0
     rollup: ^4.14.0
   peerDependencies:
-    ol: ^8.0.0
+    ol: ">= 8.0.0 < 10.0.0"
   languageName: unknown
   linkType: soft
 
