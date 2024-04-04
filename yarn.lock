@@ -6130,9 +6130,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ol@npm:^8.2.0":
-  version: 8.2.0
-  resolution: "ol@npm:8.2.0"
+"ol@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "ol@npm:9.1.0"
   dependencies:
     color-rgba: ^3.0.0
     color-space: ^2.0.1
@@ -6140,7 +6140,7 @@ __metadata:
     geotiff: ^2.0.7
     pbf: 3.2.1
     rbush: ^3.0.1
-  checksum: 66dff76569ef8923c45ebbffefb37555c7f8767a4d482a16f8624566df712cbc69a912abfa3e7ecbab7c7847df674797d38c117c93b09ca45dc2fc6139aea815
+  checksum: 09b4dc4daa780a0d613d52378b39afb0645ac67635a39524e1d2176b78c3a31cce31a268bd3eeb37cc45d3015dadea5ee0d5f76f12d311a6120e62eb4498152a
   languageName: node
   linkType: hard
 
@@ -6178,7 +6178,7 @@ __metadata:
     documentation: ^14.0.3
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
-    ol: ^8.2.0
+    ol: ^9.1.0
     rollup: ^4.14.0
   peerDependencies:
     ol: ^8.0.0

@@ -19,7 +19,7 @@ Discover:
 ## OpenLayers compatibility
 
 - OL < 8: use version 0.0.8
-- OL 8: use version >= 0.1.0
+- OL 8 & 9: use version >= 0.1.0
 
 ## Install
 
