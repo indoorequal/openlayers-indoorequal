@@ -3,5 +3,6 @@
   min-width: 1.375em;
 }
 .level-control .level-control-active {
-  background-color: rgba(0, 60, 136, 0.7);
+  color: white;
+  background-color: rgba(0, 60, 136, 1);
 }
