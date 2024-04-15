@@ -18,8 +18,8 @@ Discover:
 
 ## OpenLayers compatibility
 
-- OL < 8: use version 0.0.8
-- OL 8 & 9: use version >= 0.1.0
+*   OL < 8: use version 0.0.8
+*   OL 8 & 9: use version >= 0.1.0
 
 ## Install
 
@@ -125,7 +125,7 @@ const indoorequal = new IndoorEqual(map, { apiKey: 'myKey', spriteBaseUrl: '/ind
     *   [setHeatmapVisible](#setheatmapvisible)
         *   [Parameters](#parameters-3)
 *   [IndoorEqual#change:levels](#indoorequalchangelevels)
-*   [IndoorEqual#levelchange](#indoorequallevelchange)
+*   [IndoorEqual#change:level](#indoorequalchangelevel)
 
 ### LevelControl
 
@@ -136,7 +136,7 @@ A control to display the available levels
 #### Parameters
 
 *   `indoorEqual` **[IndoorEqual](#indoorequal)** the IndoorEqual instance
-*   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
 
     *   `options.target` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Specify a target if you want the control to be rendered outside of the map's viewport.
 
@@ -150,8 +150,8 @@ Load the indoor= source and layers in your map.
 
 #### Parameters
 
-*   `map` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** the OpenLayers instance of the map
-*   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+*   `map` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** the OpenLayers instance of the map
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
 
     *   `options.defaultStyle` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** False to not set the default style. Default true.
     *   `options.spriteBaseUrl` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The base url of the sprite (without .json or .png). If not set, no sprite will be used in the default style.
@@ -181,9 +181,9 @@ Change the heatmap layer visibility
 
 Emitted when the list of available levels has been updated
 
-Type: [array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
+Type: [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
 
-### IndoorEqual#levelchange
+### IndoorEqual#change:level
 
 Emitted when the current level has been updated
 
