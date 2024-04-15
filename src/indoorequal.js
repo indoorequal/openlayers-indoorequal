@@ -118,6 +118,6 @@ export default class IndoorEqual extends BaseObject {
 /**
  * Emitted when the current level has been updated
  *
- * @event IndoorEqual#levelchange
+ * @event IndoorEqual#change:level
  * @type {string} always emitted when the level displayed has changed
  */
