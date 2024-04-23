@@ -19,9 +19,7 @@
       "./test/setup.js"
     ],
     "testEnvironment": "jsdom",
-    "transformIgnorePatterns": [
-      "node_modules/(?!(ol|color-space|color-parse|color-rgba)/)"
-    ]
+    "transformIgnorePatterns": []
   },
   "peerDependencies": {
     "ol": ">= 8.0.0 < 10.0.0"
