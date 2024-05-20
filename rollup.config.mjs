@@ -31,6 +31,7 @@ export default [
       file: pkg.browser,
       format: 'umd',
       exports: 'named',
+      sourcemap: true,
       globals: externalOL.reduce((memo, key) => {
         memo[key] = key.replaceAll('/', '.')
         return memo;
@@ -52,8 +53,8 @@ export default [
       ...externalOL,
     ],
     output: [
-      { file: pkg.main, format: 'cjs', exports: 'named' },
-      { file: pkg.module, format: 'es' },
+      { file: pkg.main, format: 'cjs', exports: 'named', sourcemap: true },
+      { file: pkg.module, format: 'es', sourcemap: true },
     ],
     plugins: [
       babel({ babelHelpers: 'bundled' }),
