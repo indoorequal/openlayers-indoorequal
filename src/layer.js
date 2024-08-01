@@ -81,17 +81,17 @@ export function getLayer(options) {
   });
 }
 
-export function createHeatmapSource(source) {
-  const tilegrid = source.getTileGrid();
+export function createHeatmapSource(indoorLayer) {
+  const tilegrid = indoorLayer.getSource().getTileGrid();
   const vectorSource = new VectorSource({
     loader(extent, resolution, projection, success, failure) {
       const refresh = () => {
-        const features = source.getFeaturesInExtent(extent);
+        const features = indoorLayer.getFeaturesInExtent(extent);
         vectorSource.clear(true);
         vectorSource.addFeatures(features);
         success(features);
       }
-      source.on('tileloadend', refresh);
+      indoorLayer.getSource().on('tileloadend', refresh);
       refresh();
     },
     loadingstrategy: tile(tilegrid)

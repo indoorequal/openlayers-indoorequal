@@ -60,7 +60,7 @@ export default class IndoorEqual extends BaseObject {
     this.source = await loadSourceFromTileJSON(`${this.url}${urlParams}`);
 
     this.indoorLayer.setSource(this.source);
-    this.heatmapLayer.setSource(createHeatmapSource(this.source));
+    this.heatmapLayer.setSource(createHeatmapSource(this.indoorLayer));
     this._listenForLevels();
   }
 
@@ -73,11 +73,12 @@ export default class IndoorEqual extends BaseObject {
   }
 
   _listenForLevels() {
+    const layer = this.indoorLayer;
     const source = this.source;
 
     const refreshLevels = debounce(() => {
       const extent = this.map.getView().calculateExtent(this.map.getSize());
-      const features = source.getFeaturesInExtent(extent);
+      const features = layer.getFeaturesInExtent(extent);
       this.set('levels', findAllLevels(features));
     }, 1000);
 

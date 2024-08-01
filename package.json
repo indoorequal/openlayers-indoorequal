@@ -22,7 +22,7 @@
     "transformIgnorePatterns": []
   },
   "peerDependencies": {
-    "ol": "< 11.0.0"
+    "ol": "^10.0.0"
   },
   "dependencies": {
     "debounce": "^2.0.0"
