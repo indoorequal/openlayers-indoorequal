@@ -50,6 +50,12 @@ describe('IndoorEqual', () => {
     };
     const source = {
       on: (_eventName, callback) => callback(),
+    }
+    const getLayerReturn = {
+      on: (_eventName, callback) => callback(),
+      setStyle: jest.fn(),
+      setSource: jest.fn(),
+      setVisible: jest.fn(),
       getFeaturesInExtent: () => {
         return [
           new Feature({ layer: 'area', level: 0 }),
@@ -57,12 +63,6 @@ describe('IndoorEqual', () => {
           new Feature({ layer: 'area', level: -2 }),
         ];
       }
-    }
-    const getLayerReturn = {
-      on: (_eventName, callback) => callback(),
-      setStyle: jest.fn(),
-      setSource: jest.fn(),
-      setVisible: jest.fn(),
     };
     getLayer.mockReturnValueOnce(getLayerReturn);
     getHeatmapLayer.mockReturnValueOnce(getLayerReturn);
