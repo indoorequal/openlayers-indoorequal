@@ -78,17 +78,17 @@ function getLayer(options) {
     ...options
   });
 }
-function createHeatmapSource(source) {
-  const tilegrid = source.getTileGrid();
+function createHeatmapSource(indoorLayer) {
+  const tilegrid = indoorLayer.getSource().getTileGrid();
   const vectorSource = new VectorSource({
     loader(extent, resolution, projection, success, failure) {
       const refresh = () => {
-        const features = source.getFeaturesInExtent(extent);
+        const features = indoorLayer.getFeaturesInExtent(extent);
         vectorSource.clear(true);
         vectorSource.addFeatures(features);
         success(features);
       };
-      source.on('tileloadend', refresh);
+      indoorLayer.getSource().on('tileloadend', refresh);
       refresh();
     },
     loadingstrategy: tile(tilegrid)
@@ -361,7 +361,7 @@ class IndoorEqual extends BaseObject {
     const urlParams = this.apiKey ? `?key=${this.apiKey}` : '';
     this.source = await loadSourceFromTileJSON(`${this.url}${urlParams}`);
     this.indoorLayer.setSource(this.source);
-    this.heatmapLayer.setSource(createHeatmapSource(this.source));
+    this.heatmapLayer.setSource(createHeatmapSource(this.indoorLayer));
     this._listenForLevels();
   }
   _createLayers(heatmapVisible) {
@@ -374,10 +374,11 @@ class IndoorEqual extends BaseObject {
     });
   }
   _listenForLevels() {
+    const layer = this.indoorLayer;
     const source = this.source;
     const refreshLevels = debounce(() => {
       const extent = this.map.getView().calculateExtent(this.map.getSize());
-      const features = source.getFeaturesInExtent(extent);
+      const features = layer.getFeaturesInExtent(extent);
       this.set('levels', findAllLevels(features));
     }, 1000);
     source.on('tileloadend', () => refreshLevels());
@@ -414,8 +415,9 @@ class IndoorEqual extends BaseObject {
 /**
  * Emitted when the current level has been updated
  *
- * @event IndoorEqual#levelchange
+ * @event IndoorEqual#change:level
  * @type {string} always emitted when the level displayed has changed
  */
 
 export { LevelControl, IndoorEqual as default, defaultStyle, getHeatmapLayer, getLayer, loadSourceFromTileJSON };
+//# sourceMappingURL=openlayers-indoorequal.esm.js.map
