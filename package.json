@@ -1,6 +1,6 @@
 {
   "name": "openlayers-indoorequal",
-  "version": "0.2.0-rc1",
+  "version": "0.2.0",
   "description": "Integrate indoor= into your OpenLayers map.",
   "repository": "https://github.com/indoorequal/openlayers-indoorequal",
   "author": "François de Metz",
