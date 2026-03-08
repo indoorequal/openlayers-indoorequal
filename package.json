@@ -31,7 +31,7 @@
     "@babel/core": "^7.24.4",
     "@babel/plugin-proposal-export-default-from": "^7.24.1",
     "@babel/preset-env": "^7.24.4",
-    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-terser": "^1.0.0",
